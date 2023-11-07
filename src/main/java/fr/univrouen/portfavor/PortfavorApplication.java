@@ -7,10 +7,10 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
 
 @OpenAPIDefinition
 @SpringBootApplication(exclude = { UserDetailsServiceAutoConfiguration.class })
-public class PortfavorApplication {
+public class PortFavorApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PortfavorApplication.class, args);
+		SpringApplication.run(PortFavorApplication.class, args);
 	}
 
 }
