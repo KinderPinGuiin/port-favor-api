@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,19 +20,13 @@ import java.io.IOException;
  */
 public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
 
-    /**
-     * The Spring Security authentication manager.
-     */
-    private AuthenticationManager authenticationManager;
-
+    @Autowired
     private AuthenticationService authenticationService;
 
     public TokenAuthenticationFilter(
-        AuthenticationManager authenticationManager,
-        AuthenticationService authenticationService
+        AuthenticationManager authenticationManager
     ) {
         super(authenticationManager);
-        this.authenticationService = authenticationService;
     }
 
     /**
@@ -42,7 +37,11 @@ public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
      * @param chain    The Spring Boot request filter chain (middleware).
      */
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+    protected void doFilterInternal(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        FilterChain chain
+    ) throws IOException, ServletException {
         // Get the Authorization header
         var header = request.getHeader("Authorization");
 
