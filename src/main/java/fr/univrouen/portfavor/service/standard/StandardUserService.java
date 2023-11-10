@@ -41,9 +41,14 @@ public class StandardUserService implements UserService {
             throw new FunctionalException(ErrorMessage.USERNAME_ALREADY_USED, HttpStatus.FORBIDDEN);
         }
 
-        // Create the user in the database
-        var user = new User(0L, login, this.passwordEncoder.encode(password), UUID.randomUUID().toString(),
-            new HashSet<>(List.of(this.roleRepository.findById(RoleID.USER).get())));
+        // Creates the user in the database
+        var user = new User(
+            0L,
+            login,
+            this.passwordEncoder.encode(password),
+            UUID.randomUUID().toString(),
+            new HashSet<>(List.of(this.roleRepository.findById(RoleID.USER).get()))
+        );
         var persistedUser = this.userRepository.save(user);
 
         // Log the connection
@@ -51,4 +56,5 @@ public class StandardUserService implements UserService {
 
         return persistedUser;
     }
+
 }

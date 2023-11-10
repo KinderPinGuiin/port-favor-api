@@ -9,12 +9,13 @@ import fr.univrouen.portfavor.exception.FunctionalException;
 public interface UserService {
 
     /**
-     * Create the user associated to the given login information and returns it.
+     * Creates the user associated to the given information and returns it.
      *
      * @param  login                The user's nickname.
      * @param  password             The user's password.
      * @return                      The user's registered.
-     * @throws FunctionalException  Exception thrown if the given credentials are invalid.
+     * @throws FunctionalException  Exception thrown if the given login already exists or if the given information are
+     *                              invalid (bad email, invalid password...).
      */
     User create(String login, String password) throws FunctionalException;
 

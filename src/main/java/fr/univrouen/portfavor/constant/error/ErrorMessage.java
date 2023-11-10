@@ -16,7 +16,7 @@ public enum ErrorMessage {
     // Authentication errors
     INVALID_CREDENTIALS("Nom d'utilisateur ou mot de passe invalide."),
     INVALID_USERNAME("Nom d'utilisateur invalide."),
-    USERNAME_ALREADY_USED("Nom d'utilisateur déjà utilisé");
+    USERNAME_ALREADY_USED("Nom d'utilisateur déjà utilisé.");
 
     /**
      * The error message.

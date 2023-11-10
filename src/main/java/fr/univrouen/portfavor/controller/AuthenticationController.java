@@ -33,8 +33,8 @@ public class AuthenticationController {
     /**
      * Check the given credentials and returns a token if they are valid.
      *
-     * @param  request The login request
-     * @return         The authentication response DTO containing the token.
+     * @param request The login request.
+     * @return        The authentication response DTO containing the token.
      */
     @PostMapping(LOGIN_ENDPOINT)
     @ResponseBody
@@ -43,11 +43,10 @@ public class AuthenticationController {
     }
 
     /**
-     * TODO
+     * Registers the user and associate it with the given information.
      *
-     * @param request
-     * @return
-     * @throws FunctionalException
+     * @param request The registration request.
+     * @return        The registered user.
      */
     @PostMapping(REGISTER_ENDPOINT)
     @ResponseBody
