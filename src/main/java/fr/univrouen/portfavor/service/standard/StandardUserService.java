@@ -11,8 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +34,7 @@ public class StandardUserService implements UserService {
     private static Logger logger = LoggerFactory.getLogger(StandardAuthenticationService.class);
 
     @Override
-    @Transactional(rollbackFor = { Exception.class })
+    @Transactional(rollbackFor = {Exception.class})
     public User create(String login, String password) throws FunctionalException {
         // Get the user associated to the given nickname
         if (this.userRepository.findByUsername(login).orElse(null) != null) {
@@ -45,7 +43,7 @@ public class StandardUserService implements UserService {
 
         // Create the user in the database
         var user = new User(0L, login, this.passwordEncoder.encode(password), UUID.randomUUID().toString(),
-                new HashSet<>(List.of(this.roleRepository.findById(RoleID.USER).get())));
+            new HashSet<>(List.of(this.roleRepository.findById(RoleID.USER).get())));
         var persistedUser = this.userRepository.save(user);
 
         // Log the connection

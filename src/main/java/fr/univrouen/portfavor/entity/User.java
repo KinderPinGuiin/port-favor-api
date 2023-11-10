@@ -14,7 +14,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 public final class User implements Serializable, UserDetails {
 

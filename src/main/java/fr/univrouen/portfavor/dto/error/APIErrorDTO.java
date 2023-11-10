@@ -8,6 +8,6 @@ public interface APIErrorDTO {
     /**
      * @return The error message.
      */
-    String message();
+    String getMessage();
 
 }

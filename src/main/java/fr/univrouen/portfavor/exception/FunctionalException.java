@@ -32,7 +32,7 @@ public class FunctionalException extends Exception {
      * @param httpStatus The http status associated to the error.
      */
     public FunctionalException(SimpleAPIErrorDTO error, HttpStatus httpStatus) {
-        super(error.message());
+        super(error.getMessage());
         this.error = error;
         this.httpStatus = httpStatus;
     }
@@ -43,7 +43,7 @@ public class FunctionalException extends Exception {
      * @param error The error DTO.
      */
     public FunctionalException(SimpleAPIErrorDTO error) {
-        super(error.message());
+        super(error.getMessage());
         this.error = error;
     }
 

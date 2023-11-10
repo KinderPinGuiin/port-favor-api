@@ -1,18 +1,24 @@
 package fr.univrouen.portfavor.dto.request.authentication;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 /**
  * Represents a authentication request.
  */
 @Getter
+@Setter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 public class AuthenticationRequestDTO {
 
+    /**
+     * The user's login.
+     */
     private @NonNull String login;
+
+    /**
+     * The user's password.
+     */
     private @NonNull String password;
+
 }

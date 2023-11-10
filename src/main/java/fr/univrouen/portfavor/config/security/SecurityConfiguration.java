@@ -2,7 +2,6 @@ package fr.univrouen.portfavor.config.security;
 
 import fr.univrouen.portfavor.controller.AuthenticationController;
 import fr.univrouen.portfavor.service.AuthenticationService;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -51,8 +50,8 @@ public class SecurityConfiguration {
     /**
      * Method called to configure the Spring security component inside the configuration chain.
      *
-     * @param  http The HTTP security configuration.
-     * @return      The customized HTTP configuration as the rest of the configuration chain.
+     * @param http The HTTP security configuration.
+     * @return The customized HTTP configuration as the rest of the configuration chain.
      */
     @Bean
     public SecurityFilterChain configureSecurity(HttpSecurity http) throws Exception {

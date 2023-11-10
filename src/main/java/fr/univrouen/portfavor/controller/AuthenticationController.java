@@ -1,6 +1,5 @@
 package fr.univrouen.portfavor.controller;
 
-import fr.univrouen.portfavor.config.mapper.ModelMapperConfiguration;
 import fr.univrouen.portfavor.dto.request.authentication.AuthenticationRequestDTO;
 import fr.univrouen.portfavor.dto.request.authentication.RegisterRequestDTO;
 import fr.univrouen.portfavor.dto.response.authentication.AuthenticationResponseDTO;
@@ -43,6 +42,13 @@ public class AuthenticationController {
         return new AuthenticationResponseDTO(this.authenticationService.login(request.getLogin(), request.getPassword()));
     }
 
+    /**
+     * TODO
+     *
+     * @param request
+     * @return
+     * @throws FunctionalException
+     */
     @PostMapping(REGISTER_ENDPOINT)
     @ResponseBody
     private RegisterResponseDTO register(@RequestBody RegisterRequestDTO request) throws FunctionalException {

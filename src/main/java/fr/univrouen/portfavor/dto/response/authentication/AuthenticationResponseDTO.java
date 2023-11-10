@@ -1,19 +1,19 @@
 package fr.univrouen.portfavor.dto.response.authentication;
 
-import fr.univrouen.portfavor.entity.Role;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-
-import java.util.Set;
+import lombok.*;
 
 /**
  * Represents the response sent to a authenticated user.
  */
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthenticationResponseDTO {
+
+    /**
+     * The generated user's token.
+     */
     private String token;
+
 }

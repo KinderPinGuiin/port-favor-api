@@ -1,10 +1,8 @@
 package fr.univrouen.portfavor.dto.response.authentication;
 
+import fr.univrouen.portfavor.dto.response.role.RoleDTO;
 import fr.univrouen.portfavor.entity.Role;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 import java.util.Set;
 
@@ -12,11 +10,29 @@ import java.util.Set;
  * Represents the response sent to a registered user.
  */
 @Getter
+@Setter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 public class RegisterResponseDTO {
+
+    /**
+     * The created user's login.
+     */
     private @NonNull String login;
+
+    /**
+     * The created user's password.
+     */
     private @NonNull String password;
+
+    /**
+     * The created user's token.
+     */
     private String token;
-    private Set<Role> roles;
+
+    /**
+     * The created user's roles.
+     */
+    private Set<RoleDTO> roles;
+
 }
