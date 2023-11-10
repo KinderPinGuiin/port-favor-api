@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 /**
- * Represents a authentication request.
+ * Represents a registration request.
  */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequestDTO {
+public class RegisterRequestDTO {
 
     private @NonNull String login;
     private @NonNull String password;

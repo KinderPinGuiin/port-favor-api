@@ -9,11 +9,14 @@ import lombok.NonNull;
 import java.util.Set;
 
 /**
- * Represents the response sent to a authenticated user.
+ * Represents the response sent to a registered user.
  */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponseDTO {
+public class RegisterResponseDTO {
+    private @NonNull String login;
+    private @NonNull String password;
     private String token;
+    private Set<Role> roles;
 }

@@ -75,8 +75,9 @@ public class SecurityConfiguration {
         // Indicates that any endpoint needs an authentication except some of them
         http.authorizeHttpRequests(authorizeHttpRequestsCustomizer -> {
             authorizeHttpRequestsCustomizer
-                // Authorize any requests on the login endpoint
+                // Authorize any requests on the login and register endpoint
                 .requestMatchers(new AntPathRequestMatcher(AuthenticationController.LOGIN_ENDPOINT)).permitAll()
+                .requestMatchers(new AntPathRequestMatcher(AuthenticationController.REGISTER_ENDPOINT)).permitAll()
                 // Authorize any requests on the swagger
                 .requestMatchers(
                     new AntPathRequestMatcher("/swagger-ui/**"),
