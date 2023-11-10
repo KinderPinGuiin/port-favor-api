@@ -26,24 +26,24 @@ public class FunctionalException extends Exception {
     private HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
     /**
-     * FunctionalException constructor taking a SimpleAPIErrorDTO as an error and an http status.
+     * FunctionalException constructor taking an APIErrorDTO as an error and an http status.
      *
      * @param error      The error DTO.
      * @param httpStatus The http status associated to the error.
      */
-    public FunctionalException(SimpleAPIErrorDTO error, HttpStatus httpStatus) {
-        super(error.message());
+    public FunctionalException(APIErrorDTO error, HttpStatus httpStatus) {
+        super(error.getMessage());
         this.error = error;
         this.httpStatus = httpStatus;
     }
 
     /**
-     * FunctionalException constructor taking a SimpleAPIErrorDTO as an error.
+     * FunctionalException constructor taking an APIErrorDTO as an error.
      *
      * @param error The error DTO.
      */
-    public FunctionalException(SimpleAPIErrorDTO error) {
-        super(error.message());
+    public FunctionalException(APIErrorDTO error) {
+        super(error.getMessage());
         this.error = error;
     }
 

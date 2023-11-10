@@ -1,10 +1,19 @@
 package fr.univrouen.portfavor.dto.response.authentication;
 
+import lombok.*;
+
 /**
- * Represents the response sent to an authenticated user. It contains the token to use to make requests to the API.
- *
- * @param token User authentication token.
+ * Represents the response sent to a authenticated user.
  */
-public record AuthenticationResponseDTO(
-    String token
-) {}
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class AuthenticationResponseDTO {
+
+    /**
+     * The generated user's token.
+     */
+    private String token;
+
+}

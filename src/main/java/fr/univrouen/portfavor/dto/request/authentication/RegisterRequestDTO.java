@@ -3,13 +3,13 @@ package fr.univrouen.portfavor.dto.request.authentication;
 import lombok.*;
 
 /**
- * Represents a authentication request.
+ * Represents a registration request.
  */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class AuthenticationRequestDTO {
+public class RegisterRequestDTO {
 
     /**
      * The user's login.

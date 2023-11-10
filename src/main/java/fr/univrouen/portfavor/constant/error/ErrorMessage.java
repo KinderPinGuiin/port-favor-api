@@ -15,7 +15,10 @@ public enum ErrorMessage {
 
     // Authentication errors
     INVALID_CREDENTIALS("Nom d'utilisateur ou mot de passe invalide."),
-    INVALID_USERNAME("Nom d'utilisateur invalide.");
+    INVALID_USERNAME("Nom d'utilisateur invalide."),
+    USERNAME_ALREADY_USED("Nom d'utilisateur déjà utilisé."),
+    INVALID_EMAIL("Adresse mail invalide."),
+    PASSWORD_IS_TOO_SHORT("Mot de passe trop court (8 caractères minimum)");
 
     /**
      * The error message.
