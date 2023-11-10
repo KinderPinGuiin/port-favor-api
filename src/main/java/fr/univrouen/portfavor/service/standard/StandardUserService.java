@@ -36,25 +36,32 @@ public class StandardUserService implements UserService {
     @Override
     @Transactional(rollbackFor = {Exception.class})
     public User create(String login, String password) throws FunctionalException {
+        // Check if the given parameters are valid
+        if (!login.matches("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")) {
+            throw new FunctionalException(ErrorMessage.INVALID_EMAIL, HttpStatus.BAD_REQUEST);
+        }
+        if (password.length() < 8) {
+            throw new FunctionalException(ErrorMessage.PASSWORD_IS_TOO_SHORT, HttpStatus.BAD_REQUEST);
+        }
+
         // Get the user associated to the given nickname
         if (this.userRepository.findByUsername(login).orElse(null) != null) {
-            throw new FunctionalException(ErrorMessage.USERNAME_ALREADY_USED, HttpStatus.FORBIDDEN);
+            throw new FunctionalException(ErrorMessage.USERNAME_ALREADY_USED, HttpStatus.BAD_REQUEST);
         }
 
         // Creates the user in the database
-        var user = new User(
+        var user = this.userRepository.save(new User(
             0L,
             login,
             this.passwordEncoder.encode(password),
             UUID.randomUUID().toString(),
             new HashSet<>(List.of(this.roleRepository.findById(RoleID.USER).get()))
-        );
-        var persistedUser = this.userRepository.save(user);
+        ));
 
         // Log the connection
-        logger.info(user.getUsername() + " logged in.");
+        logger.info(user.getUsername() + " created and logged in.");
 
-        return persistedUser;
+        return user;
     }
 
 }

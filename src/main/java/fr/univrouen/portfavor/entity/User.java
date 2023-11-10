@@ -50,11 +50,7 @@ public final class User implements Serializable, UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
-    public User(Long id, String username, String password, String token) {
-        if (id == null || username == null || password == null || token == null) {
-            throw new NullPointerException();
-        }
-
+    public User(@NonNull Long id, @NonNull String username, @NonNull String password, String token) {
         this.id = id;
         this.username = username;
         this.password = password;
