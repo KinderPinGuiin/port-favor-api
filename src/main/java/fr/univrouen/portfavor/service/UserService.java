@@ -9,6 +9,15 @@ import fr.univrouen.portfavor.exception.FunctionalException;
 public interface UserService {
 
     /**
+     * Retrieves the user associated to the given ID.
+     *
+     * @param  id                  The ID of the user to retrieve.
+     * @return                     The asked user.
+     * @throws FunctionalException Exception thrown if the given ID is invalid.
+     */
+    User getById(Long id) throws FunctionalException;
+
+    /**
      * Creates the user associated to the given information and returns it.
      *
      * @param  login                The user's nickname.

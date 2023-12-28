@@ -34,6 +34,17 @@ public class StandardUserService implements UserService {
     private static Logger logger = LoggerFactory.getLogger(StandardAuthenticationService.class);
 
     @Override
+    public User getById(Long id) throws FunctionalException {
+        // Retrieve the user and check it
+        var user = this.userRepository.findById(id);
+        if (user.isEmpty()) {
+            throw new FunctionalException(ErrorMessage.INVALID_ID, HttpStatus.NOT_FOUND);
+        }
+
+        return user.get();
+    }
+
+    @Override
     @Transactional(rollbackFor = {Exception.class})
     public User create(String login, String password) throws FunctionalException {
         // Check if the given parameters are valid
@@ -59,7 +70,7 @@ public class StandardUserService implements UserService {
         ));
 
         // Log the connection
-        logger.info(user.getUsername() + " created and logged in.");
+        logger.info("User " + user.getUsername() + " created with ID " + user.getId() + ".");
 
         return user;
     }

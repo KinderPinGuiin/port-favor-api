@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthenticationController {
 
+    /*
+     * Routes
+     */
+
     public static final String LOGIN_ENDPOINT = "/login";
     public static final String REGISTER_ENDPOINT = "/register";
 
@@ -38,7 +42,7 @@ public class AuthenticationController {
      */
     @PostMapping(LOGIN_ENDPOINT)
     @ResponseBody
-    private AuthenticationResponseDTO login(@RequestBody AuthenticationRequestDTO request) throws FunctionalException {
+    public AuthenticationResponseDTO login(@RequestBody AuthenticationRequestDTO request) throws FunctionalException {
         return new AuthenticationResponseDTO(this.authenticationService.login(request.getLogin(), request.getPassword()));
     }
 
@@ -50,7 +54,7 @@ public class AuthenticationController {
      */
     @PostMapping(REGISTER_ENDPOINT)
     @ResponseBody
-    private RegisterResponseDTO register(@RequestBody RegisterRequestDTO request) throws FunctionalException {
+    public RegisterResponseDTO register(@RequestBody RegisterRequestDTO request) throws FunctionalException {
         return modelMapper.map(this.userService.create(request.getLogin(), request.getPassword()), RegisterResponseDTO.class);
     }
 
