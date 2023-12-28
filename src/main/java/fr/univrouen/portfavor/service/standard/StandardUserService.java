@@ -10,6 +10,7 @@ import fr.univrouen.portfavor.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,22 @@ public class StandardUserService implements UserService {
     private PasswordEncoder passwordEncoder;
 
     private static Logger logger = LoggerFactory.getLogger(StandardAuthenticationService.class);
+
+    @Override
+    public List<User> getAll(Integer page, Integer pageSize) throws FunctionalException {
+        // If page is null returns all the users
+        if (page == null) {
+            return this.userRepository.findAll();
+        }
+
+        // Check params
+        if (page < 0 || (pageSize != null && pageSize <= 0)) {
+            throw new FunctionalException(ErrorMessage.INVALID_PAGINATION, HttpStatus.BAD_REQUEST);
+        }
+
+        // Apply pagination
+        return this.userRepository.findAll(PageRequest.of(page, pageSize == null ? 10 : pageSize)).toList();
+    }
 
     @Override
     public User getById(Long id) throws FunctionalException {

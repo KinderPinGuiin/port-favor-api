@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -30,6 +33,26 @@ public class UserController {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    /**
+     * Retrieves all the users and paginate them.
+     *
+     * @param  page     The page of the pagination (if null all users are returned)
+     * @param  pageSize The page size (default: 10).
+     * @return          The paginated users (or all if page is null).
+     */
+    @GetMapping(GET_USERS)
+    @PreAuthorize("hasAuthority('" + RoleID.ADMIN + "')")
+    public List<UserResponseDTO> getAllUsers(
+        @RequestParam(value = "page", required = false) Integer page,
+        @RequestParam(value = "pageSize", required = false) Integer pageSize
+    ) throws FunctionalException {
+        return this.userService
+            .getAll(page, pageSize)
+            .stream()
+            .map(user -> this.modelMapper.map(user, UserResponseDTO.class))
+            .toList();
+    }
 
     /**
      * Get the user associated to the given ID and returns it.

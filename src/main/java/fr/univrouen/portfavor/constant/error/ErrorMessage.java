@@ -12,6 +12,7 @@ public enum ErrorMessage {
     INTERNAL_SERVER_ERROR("Une erreur interne est survenue."),
     UNKNOWN_ERROR("Une erreur non identifiée est survenue."),
     ACCESS_DENIED("Accès refusé, veuillez-vous identifier sur un compte ayant les permissions d'effectuer cette opération."),
+    INVALID_PAGINATION("Page ou taille de page invalide."),
 
     // Authentication errors
     INVALID_CREDENTIALS("Adresse email ou mot de passe invalide."),
