@@ -3,9 +3,11 @@ package fr.univrouen.portfavor.controller;
 import fr.univrouen.portfavor.constant.role.RoleID;
 import fr.univrouen.portfavor.dto.request.user.CreateUserRequestDTO;
 import fr.univrouen.portfavor.dto.request.user.UpdateUserPasswordRequestDTO;
+import fr.univrouen.portfavor.dto.request.user.UpdateUserAdminRequestDTO;
 import fr.univrouen.portfavor.dto.request.user.UpdateUserRequestDTO;
 import fr.univrouen.portfavor.dto.response.authentication.AuthenticationResponseDTO;
 import fr.univrouen.portfavor.dto.response.user.UserResponseDTO;
+import fr.univrouen.portfavor.entity.Role;
 import fr.univrouen.portfavor.exception.FunctionalException;
 import fr.univrouen.portfavor.service.AuthenticationService;
 import fr.univrouen.portfavor.service.UserService;
@@ -15,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
@@ -28,6 +31,7 @@ public class UserController {
     public static final String GET_USER = USER_ROOT + "/get/{id}";
     public static final String CREATE_USER = USER_ROOT + "/create";
     public static final String UPDATE_USER = USER_ROOT + "/update";
+    public static final String UPDATE_USER_ADMIN = USER_ROOT + "/update-admin";
     public static final String UPDATE_USER_PASSWORD = USER_ROOT + "/update-password";
     public static final String DELETE_USER = USER_ROOT + "/delete";
 
@@ -95,21 +99,37 @@ public class UserController {
     }
 
     /**
-     * Updates the given user with the given information.
+     * Updates the given user with the given information. This endpoint is only opened to admin.
      *
      * @param  updateRequest User's information.
      * @return               The updated user.
      */
-    @PostMapping(UPDATE_USER)
+    @PostMapping(UPDATE_USER_ADMIN)
     @PreAuthorize("hasAuthority('" + RoleID.ADMIN + "')")
     @ResponseBody
-    public UserResponseDTO updateUser(@RequestBody UpdateUserRequestDTO updateRequest) throws FunctionalException {
+    public UserResponseDTO updateUserAdmin(@RequestBody UpdateUserAdminRequestDTO updateRequest) throws FunctionalException {
         return this.modelMapper.map(
             this.userService.update(
                 updateRequest.getId(),
                 updateRequest.getLogin(),
                 updateRequest.getPassword(),
                 updateRequest.getRoles()
+            ),
+            UserResponseDTO.class
+        );
+    }
+
+    @PostMapping(UPDATE_USER)
+    @PreAuthorize("hasAuthority('" + RoleID.USER + "') || hasAuthority('" + RoleID.ADMIN + "')")
+    @ResponseBody
+    public UserResponseDTO updateUser(@RequestBody UpdateUserRequestDTO updateRequest) throws FunctionalException {
+        var user = this.authenticationService.getCurrentUser();
+        return this.modelMapper.map(
+            this.userService.update(
+                user.getId(),
+                updateRequest.getNewUsername(),
+                null,
+                user.getRoles().stream().map(Role::getName).collect(Collectors.toSet())
             ),
             UserResponseDTO.class
         );
@@ -135,5 +155,12 @@ public class UserController {
             )
         );
     }
+
+//    @DeleteMapping(DELETE_USER)
+//    @PreAuthorize("hasAuthority('" + RoleID.ADMIN + "')")
+//    @ResponseBody
+//    public UserResponseDTO deleteUser(@RequestBody DeleteUserRequestDTO deleteUserRequest) throws FunctionalException {
+//        return this.modelMapper.map(this.userService.delete(deleteUserRequest.getId()), UserResponseDTO.class);
+//    }
 
 }
