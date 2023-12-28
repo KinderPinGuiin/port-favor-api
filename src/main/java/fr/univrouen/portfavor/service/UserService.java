@@ -1,9 +1,11 @@
 package fr.univrouen.portfavor.service;
 
+import fr.univrouen.portfavor.constant.role.RoleID;
 import fr.univrouen.portfavor.entity.User;
 import fr.univrouen.portfavor.exception.FunctionalException;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * The authentication service contains all the logic about the API authentication.
@@ -34,10 +36,11 @@ public interface UserService {
      *
      * @param  login                The user's nickname.
      * @param  password             The user's password.
+     * @param  roles                The user's roles.
      * @return                      The user's registered.
      * @throws FunctionalException  Exception thrown if the given login already exists or if the given information are
      *                              invalid (bad email, invalid password...).
      */
-    User create(String login, String password) throws FunctionalException;
+    User create(String login, String password, Set<String> roles) throws FunctionalException;
 
 }

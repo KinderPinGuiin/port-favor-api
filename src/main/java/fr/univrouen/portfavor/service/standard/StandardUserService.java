@@ -18,7 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service("standard-user-service")
 public class StandardUserService implements UserService {
@@ -63,7 +65,7 @@ public class StandardUserService implements UserService {
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public User create(String login, String password) throws FunctionalException {
+    public User create(String login, String password, Set<String> roles) throws FunctionalException {
         // Check if the given parameters are valid
         if (!login.matches("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")) {
             throw new FunctionalException(ErrorMessage.INVALID_EMAIL, HttpStatus.BAD_REQUEST);
@@ -83,7 +85,9 @@ public class StandardUserService implements UserService {
             login,
             this.passwordEncoder.encode(password),
             UUID.randomUUID().toString(),
-            new HashSet<>(List.of(this.roleRepository.findById(RoleID.USER).get()))
+            roles.isEmpty()
+                ? new HashSet<>(List.of(this.roleRepository.findById(RoleID.USER).get()))
+                : roles.stream().map(role -> this.roleRepository.findById(role).get()).collect(Collectors.toSet())
         ));
 
         // Log the connection

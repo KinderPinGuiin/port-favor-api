@@ -1,16 +1,14 @@
 package fr.univrouen.portfavor.controller;
 
 import fr.univrouen.portfavor.constant.role.RoleID;
+import fr.univrouen.portfavor.dto.request.user.CreateUserRequestDTO;
 import fr.univrouen.portfavor.dto.response.user.UserResponseDTO;
 import fr.univrouen.portfavor.exception.FunctionalException;
 import fr.univrouen.portfavor.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -43,6 +41,7 @@ public class UserController {
      */
     @GetMapping(GET_USERS)
     @PreAuthorize("hasAuthority('" + RoleID.ADMIN + "')")
+    @ResponseBody
     public List<UserResponseDTO> getAllUsers(
         @RequestParam(value = "page", required = false) Integer page,
         @RequestParam(value = "pageSize", required = false) Integer pageSize
@@ -62,8 +61,23 @@ public class UserController {
      */
     @GetMapping(GET_USER)
     @PreAuthorize("hasAuthority('" + RoleID.ADMIN + "')")
+    @ResponseBody
     public UserResponseDTO getUser(@PathVariable("id") Long id) throws FunctionalException  {
         return this.modelMapper.map(this.userService.getById(id), UserResponseDTO.class);
+    }
+
+    @PostMapping(CREATE_USER)
+    @PreAuthorize("hasAuthority('" + RoleID.ADMIN + "')")
+    @ResponseBody
+    public UserResponseDTO createUser(@RequestBody CreateUserRequestDTO createUserRequest) throws FunctionalException {
+        return this.modelMapper.map(
+            this.userService.create(
+                createUserRequest.getLogin(),
+                createUserRequest.getPassword(),
+                createUserRequest.getRoles()
+            ),
+            UserResponseDTO.class
+        );
     }
 
 }

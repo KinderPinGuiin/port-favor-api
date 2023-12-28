@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Set;
+
 /**
  * The authentication controller allows a user to connect to the API.
  */
@@ -55,7 +57,10 @@ public class AuthenticationController {
     @PostMapping(REGISTER_ENDPOINT)
     @ResponseBody
     public RegisterResponseDTO register(@RequestBody RegisterRequestDTO request) throws FunctionalException {
-        return modelMapper.map(this.userService.create(request.getLogin(), request.getPassword()), RegisterResponseDTO.class);
+        return modelMapper.map(
+            this.userService.create(request.getLogin(), request.getPassword(), Set.of()),
+            RegisterResponseDTO.class
+        );
     }
 
 }

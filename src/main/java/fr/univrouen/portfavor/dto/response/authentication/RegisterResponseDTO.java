@@ -18,7 +18,7 @@ public class RegisterResponseDTO {
     /**
      * The created user's login.
      */
-    private @NonNull String login;
+    private @NonNull String username;
 
     /**
      * The created user's token.
