@@ -45,7 +45,10 @@ public class AuthenticationController {
     @PostMapping(LOGIN_ENDPOINT)
     @ResponseBody
     public AuthenticationResponseDTO login(@RequestBody AuthenticationRequestDTO request) throws FunctionalException {
-        return new AuthenticationResponseDTO(this.authenticationService.login(request.getLogin(), request.getPassword()));
+        return this.modelMapper.map(
+            this.authenticationService.login(request.getLogin(), request.getPassword()),
+            AuthenticationResponseDTO.class
+        );
     }
 
     /**

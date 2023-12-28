@@ -92,6 +92,7 @@ public class StandardUserService implements UserService {
     }
 
     @Override
+    @Transactional(rollbackFor = {Exception.class})
     public User update(Long id, String login, String password, Set<String> roles) throws FunctionalException {
         // Get the user associated to the given ID
         var user = this.getById(id);
@@ -121,6 +122,7 @@ public class StandardUserService implements UserService {
     }
 
     @Override
+    @Transactional(rollbackFor = {Exception.class})
     public String updatePassword(User user, String oldPassword, String newPassword) throws FunctionalException {
         // Check the given old password
         if (!this.passwordEncoder.matches(oldPassword, user.getPassword())) {
@@ -138,6 +140,16 @@ public class StandardUserService implements UserService {
         user.setToken(token);
 
         return this.userRepository.save(user).getToken();
+    }
+
+    @Override
+    @Transactional(rollbackFor = {Exception.class})
+    public User delete(Long id) throws FunctionalException {
+        // Get the user and delete it
+        var user = this.getById(id);
+        this.userRepository.delete(user);
+
+        return user;
     }
 
     /**

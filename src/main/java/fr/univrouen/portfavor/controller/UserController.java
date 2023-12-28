@@ -1,11 +1,9 @@
 package fr.univrouen.portfavor.controller;
 
 import fr.univrouen.portfavor.constant.role.RoleID;
-import fr.univrouen.portfavor.dto.request.user.CreateUserRequestDTO;
-import fr.univrouen.portfavor.dto.request.user.UpdateUserPasswordRequestDTO;
-import fr.univrouen.portfavor.dto.request.user.UpdateUserAdminRequestDTO;
-import fr.univrouen.portfavor.dto.request.user.UpdateUserRequestDTO;
+import fr.univrouen.portfavor.dto.request.user.*;
 import fr.univrouen.portfavor.dto.response.authentication.AuthenticationResponseDTO;
+import fr.univrouen.portfavor.dto.response.role.RoleResponseDTO;
 import fr.univrouen.portfavor.dto.response.user.UserResponseDTO;
 import fr.univrouen.portfavor.entity.Role;
 import fr.univrouen.portfavor.exception.FunctionalException;
@@ -119,6 +117,12 @@ public class UserController {
         );
     }
 
+    /**
+     * Request sent to update the user own information.
+     *
+     * @param  updateRequest The new user's information.
+     * @return               The updated user.
+     */
     @PostMapping(UPDATE_USER)
     @PreAuthorize("hasAuthority('" + RoleID.USER + "') || hasAuthority('" + RoleID.ADMIN + "')")
     @ResponseBody
@@ -147,20 +151,30 @@ public class UserController {
     public AuthenticationResponseDTO updateUserPassword(
         @RequestBody UpdateUserPasswordRequestDTO updateRequest
     ) throws FunctionalException {
+        var user = this.authenticationService.getCurrentUser();
         return new AuthenticationResponseDTO(
+            user.getId(),
+            user.getUsername(),
+            user.getRoles().stream().map(role -> this.modelMapper.map(role, RoleResponseDTO.class)).collect(Collectors.toSet()),
             this.userService.updatePassword(
-                this.authenticationService.getCurrentUser(),
+                user,
                 updateRequest.getOldPassword(),
                 updateRequest.getNewPassword()
             )
         );
     }
 
-//    @DeleteMapping(DELETE_USER)
-//    @PreAuthorize("hasAuthority('" + RoleID.ADMIN + "')")
-//    @ResponseBody
-//    public UserResponseDTO deleteUser(@RequestBody DeleteUserRequestDTO deleteUserRequest) throws FunctionalException {
-//        return this.modelMapper.map(this.userService.delete(deleteUserRequest.getId()), UserResponseDTO.class);
-//    }
+    /**
+     * Deletes the given user.
+     *
+     * @param  deleteUserRequest The user's to delete information.
+     * @return                   The deleted user.
+     */
+    @DeleteMapping(DELETE_USER)
+    @PreAuthorize("hasAuthority('" + RoleID.ADMIN + "')")
+    @ResponseBody
+    public UserResponseDTO deleteUser(@RequestBody DeleteUserRequestDTO deleteUserRequest) throws FunctionalException {
+        return this.modelMapper.map(this.userService.delete(deleteUserRequest.getId()), UserResponseDTO.class);
+    }
 
 }

@@ -65,4 +65,13 @@ public interface UserService {
      */
     String updatePassword(User user, String oldPassword, String newPassword) throws FunctionalException;
 
+    /**
+     * Deletes the user associated to the given ID.
+     *
+     * @param id                   The user's to delete ID.
+     * @return                     The deleted user.
+     * @throws FunctionalException Exception thrown if the given ID is invalid.
+     */
+    User delete(Long id) throws FunctionalException;
+
 }
