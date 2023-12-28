@@ -120,6 +120,26 @@ public class StandardUserService implements UserService {
         return this.userRepository.save(user);
     }
 
+    @Override
+    public String updatePassword(User user, String oldPassword, String newPassword) throws FunctionalException {
+        // Check the given old password
+        if (!this.passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new FunctionalException(ErrorMessage.INVALID_OLD_PASSWORD, HttpStatus.BAD_REQUEST);
+        }
+
+        // Checks the new password
+        if (newPassword.length() < 8) {
+            throw new FunctionalException(ErrorMessage.PASSWORD_IS_TOO_SHORT, HttpStatus.BAD_REQUEST);
+        }
+
+        // Updates the user's password and token
+        var token = UUID.randomUUID().toString();
+        user.setPassword(this.passwordEncoder.encode(newPassword));
+        user.setToken(token);
+
+        return this.userRepository.save(user).getToken();
+    }
+
     /**
      * Checks the given user information and throw an exception if they are invalid.
      *

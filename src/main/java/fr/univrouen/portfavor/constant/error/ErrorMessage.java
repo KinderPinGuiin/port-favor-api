@@ -22,7 +22,8 @@ public enum ErrorMessage {
     INVALID_USER_ID("Identifiant utilisateur invalide."),
     INVALID_EMAIL("Adresse mail invalide."),
     INVALID_ROLE_ID("Le rôle donné est invalide."),
-    PASSWORD_IS_TOO_SHORT("Mot de passe trop court (8 caractères minimum)");
+    PASSWORD_IS_TOO_SHORT("Mot de passe trop court (8 caractères minimum)."),
+    INVALID_OLD_PASSWORD("Ancien mot de passe invalide.");
 
     /**
      * The error message.

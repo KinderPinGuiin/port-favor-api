@@ -2,9 +2,12 @@ package fr.univrouen.portfavor.controller;
 
 import fr.univrouen.portfavor.constant.role.RoleID;
 import fr.univrouen.portfavor.dto.request.user.CreateUserRequestDTO;
+import fr.univrouen.portfavor.dto.request.user.UpdateUserPasswordRequestDTO;
 import fr.univrouen.portfavor.dto.request.user.UpdateUserRequestDTO;
+import fr.univrouen.portfavor.dto.response.authentication.AuthenticationResponseDTO;
 import fr.univrouen.portfavor.dto.response.user.UserResponseDTO;
 import fr.univrouen.portfavor.exception.FunctionalException;
+import fr.univrouen.portfavor.service.AuthenticationService;
 import fr.univrouen.portfavor.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -106,6 +112,27 @@ public class UserController {
                 updateRequest.getRoles()
             ),
             UserResponseDTO.class
+        );
+    }
+
+    /**
+     * Updates the given user's password.
+     *
+     * @param updateRequest The password update information.
+     * @return              The updated user's new token.
+     */
+    @PostMapping(UPDATE_USER_PASSWORD)
+    @PreAuthorize("hasAuthority('" + RoleID.USER + "') || hasAuthority('" + RoleID.ADMIN + "')")
+    @ResponseBody
+    public AuthenticationResponseDTO updateUserPassword(
+        @RequestBody UpdateUserPasswordRequestDTO updateRequest
+    ) throws FunctionalException {
+        return new AuthenticationResponseDTO(
+            this.userService.updatePassword(
+                this.authenticationService.getCurrentUser(),
+                updateRequest.getOldPassword(),
+                updateRequest.getNewPassword()
+            )
         );
     }
 

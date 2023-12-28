@@ -1,6 +1,5 @@
 package fr.univrouen.portfavor.service;
 
-import fr.univrouen.portfavor.constant.role.RoleID;
 import fr.univrouen.portfavor.entity.User;
 import fr.univrouen.portfavor.exception.FunctionalException;
 
@@ -54,5 +53,16 @@ public interface UserService {
      * @throws FunctionalException Exception thrown if the given ID is invalid or if the user's information are invalid.
      */
     User update(Long id, String login, String password, Set<String> roles) throws FunctionalException;
+
+    /**
+     * Updates the given user's password and returns the new token.
+     *
+     * @param user                 The user's to update.
+     * @param oldPassword          The user's old password.
+     * @param newPassword          The user's new password.
+     * @return                     The user's updated token.
+     * @throws FunctionalException Exception thrown if the given ID, old password or new password are invalid.
+     */
+    String updatePassword(User user, String oldPassword, String newPassword) throws FunctionalException;
 
 }
