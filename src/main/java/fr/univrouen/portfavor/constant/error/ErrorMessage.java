@@ -19,8 +19,9 @@ public enum ErrorMessage {
     USERNAME_ALREADY_USED("Adresse email déjà utilisé."),
 
     // User errors
-    INVALID_ID("Identifiant utilisateur invalide."),
+    INVALID_USER_ID("Identifiant utilisateur invalide."),
     INVALID_EMAIL("Adresse mail invalide."),
+    INVALID_ROLE_ID("Le rôle donné est invalide."),
     PASSWORD_IS_TOO_SHORT("Mot de passe trop court (8 caractères minimum)");
 
     /**

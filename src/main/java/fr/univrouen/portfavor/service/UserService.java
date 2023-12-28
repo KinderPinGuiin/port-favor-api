@@ -43,4 +43,16 @@ public interface UserService {
      */
     User create(String login, String password, Set<String> roles) throws FunctionalException;
 
+    /**
+     * Updates the given user and returns it.
+     *
+     * @param id                   The ID of the user to update.
+     * @param login                The new user's login.
+     * @param password             The new user's password (null if no changes).
+     * @param roles                The new user's roles.
+     * @return                     The new user's roles.
+     * @throws FunctionalException Exception thrown if the given ID is invalid or if the user's information are invalid.
+     */
+    User update(Long id, String login, String password, Set<String> roles) throws FunctionalException;
+
 }

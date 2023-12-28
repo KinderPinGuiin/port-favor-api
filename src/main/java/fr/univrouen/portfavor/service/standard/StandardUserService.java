@@ -57,7 +57,7 @@ public class StandardUserService implements UserService {
         // Retrieve the user and check it
         var user = this.userRepository.findById(id);
         if (user.isEmpty()) {
-            throw new FunctionalException(ErrorMessage.INVALID_ID, HttpStatus.NOT_FOUND);
+            throw new FunctionalException(ErrorMessage.INVALID_USER_ID, HttpStatus.NOT_FOUND);
         }
 
         return user.get();
@@ -67,14 +67,9 @@ public class StandardUserService implements UserService {
     @Transactional(rollbackFor = {Exception.class})
     public User create(String login, String password, Set<String> roles) throws FunctionalException {
         // Check if the given parameters are valid
-        if (!login.matches("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")) {
-            throw new FunctionalException(ErrorMessage.INVALID_EMAIL, HttpStatus.BAD_REQUEST);
-        }
-        if (password.length() < 8) {
-            throw new FunctionalException(ErrorMessage.PASSWORD_IS_TOO_SHORT, HttpStatus.BAD_REQUEST);
-        }
+        this.checkUserInformation(login, password, roles);
 
-        // Get the user associated to the given nickname
+        // Get the user associated to the given login and check that it doesn't already exist
         if (this.userRepository.findByUsername(login).orElse(null) != null) {
             throw new FunctionalException(ErrorMessage.USERNAME_ALREADY_USED, HttpStatus.BAD_REQUEST);
         }
@@ -94,6 +89,56 @@ public class StandardUserService implements UserService {
         logger.info("User " + user.getUsername() + " created with ID " + user.getId() + ".");
 
         return user;
+    }
+
+    @Override
+    public User update(Long id, String login, String password, Set<String> roles) throws FunctionalException {
+        // Get the user associated to the given ID
+        var user = this.getById(id);
+
+        // Check if the given parameters are valid
+        this.checkUserInformation(login, password == null ? "00000000" : password, roles);
+
+        // Get the user associated to the given login and check that it doesn't already exist
+        if (!user.getUsername().equals(login) && this.userRepository.findByUsername(login).orElse(null) != null) {
+            throw new FunctionalException(ErrorMessage.USERNAME_ALREADY_USED, HttpStatus.BAD_REQUEST);
+        }
+
+        // Update the user's information
+        user.setUsername(login);
+        if (password != null && !this.passwordEncoder.matches(password, user.getPassword())) {
+            // If the password is not the same then we refresh the token
+            user.setPassword(this.passwordEncoder.encode(password));
+            user.setToken(UUID.randomUUID().toString());
+        }
+        user.setRoles(
+            roles.isEmpty()
+                ? new HashSet<>(List.of(this.roleRepository.findById(RoleID.USER).get()))
+                : roles.stream().map(role -> this.roleRepository.findById(role).get()).collect(Collectors.toSet())
+        );
+
+        return this.userRepository.save(user);
+    }
+
+    /**
+     * Checks the given user information and throw an exception if they are invalid.
+     *
+     * @param login    The user's login.
+     * @param password The user's password.
+     * @param roles    The user's roles ID.
+     */
+    private void checkUserInformation(String login, String password, Set<String> roles) throws FunctionalException {
+        // Check if the given parameters are valid
+        if (!login.matches("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")) {
+            throw new FunctionalException(ErrorMessage.INVALID_EMAIL, HttpStatus.BAD_REQUEST);
+        }
+        if (password.length() < 8) {
+            throw new FunctionalException(ErrorMessage.PASSWORD_IS_TOO_SHORT, HttpStatus.BAD_REQUEST);
+        }
+        for (String roleID : roles) {
+            this.roleRepository.findById(roleID)
+                .orElseThrow(() -> new FunctionalException(ErrorMessage.INVALID_ROLE_ID, HttpStatus.NOT_FOUND));
+        }
     }
 
 }

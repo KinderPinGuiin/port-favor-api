@@ -2,6 +2,7 @@ package fr.univrouen.portfavor.controller;
 
 import fr.univrouen.portfavor.constant.role.RoleID;
 import fr.univrouen.portfavor.dto.request.user.CreateUserRequestDTO;
+import fr.univrouen.portfavor.dto.request.user.UpdateUserRequestDTO;
 import fr.univrouen.portfavor.dto.response.user.UserResponseDTO;
 import fr.univrouen.portfavor.exception.FunctionalException;
 import fr.univrouen.portfavor.service.UserService;
@@ -24,6 +25,7 @@ public class UserController {
     public static final String GET_USER = USER_ROOT + "/get/{id}";
     public static final String CREATE_USER = USER_ROOT + "/create";
     public static final String UPDATE_USER = USER_ROOT + "/update";
+    public static final String UPDATE_USER_PASSWORD = USER_ROOT + "/update-password";
     public static final String DELETE_USER = USER_ROOT + "/delete";
 
     @Autowired
@@ -66,6 +68,12 @@ public class UserController {
         return this.modelMapper.map(this.userService.getById(id), UserResponseDTO.class);
     }
 
+    /**
+     * Creates the given user and returns it.
+     *
+     * @param createUserRequest The user creation request body.
+     * @return                  The created user.
+     */
     @PostMapping(CREATE_USER)
     @PreAuthorize("hasAuthority('" + RoleID.ADMIN + "')")
     @ResponseBody
@@ -75,6 +83,27 @@ public class UserController {
                 createUserRequest.getLogin(),
                 createUserRequest.getPassword(),
                 createUserRequest.getRoles()
+            ),
+            UserResponseDTO.class
+        );
+    }
+
+    /**
+     * Updates the given user with the given information.
+     *
+     * @param  updateRequest User's information.
+     * @return               The updated user.
+     */
+    @PostMapping(UPDATE_USER)
+    @PreAuthorize("hasAuthority('" + RoleID.ADMIN + "')")
+    @ResponseBody
+    public UserResponseDTO updateUser(@RequestBody UpdateUserRequestDTO updateRequest) throws FunctionalException {
+        return this.modelMapper.map(
+            this.userService.update(
+                updateRequest.getId(),
+                updateRequest.getLogin(),
+                updateRequest.getPassword(),
+                updateRequest.getRoles()
             ),
             UserResponseDTO.class
         );
