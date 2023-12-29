@@ -47,11 +47,24 @@ public class DevelopmentDatabaseInitializer implements ApplicationRunner {
      * Initialize the dev users.
      */
     private void initUsers() {
+        // Admin user
         this.userRepository.save(new User(
             0L,
-            "admin",
+            "admin@gmail.com",
             this.passwordEncoder.encode("admin"),
             "36b780db-cdfc-40b6-b8b2-2f5699b5be44",
+            new HashSet<>(List.of(
+                this.roleRepository.findById(RoleID.USER).get(),
+                this.roleRepository.findById(RoleID.ADMIN).get()
+            ))
+        ));
+
+        // Classic user
+        this.userRepository.save(new User(
+            0L,
+            "user@gmail.com",
+            this.passwordEncoder.encode("user"),
+            "36b780db-cdfc-40b6-b8b2-2f5699b5be45",
             new HashSet<>(List.of(this.roleRepository.findById(RoleID.USER).get()))
         ));
     }

@@ -20,13 +20,14 @@ import java.io.IOException;
  */
 public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
 
-    @Autowired
     private AuthenticationService authenticationService;
 
     public TokenAuthenticationFilter(
-        AuthenticationManager authenticationManager
+        AuthenticationManager authenticationManager,
+        AuthenticationService authenticationService
     ) {
         super(authenticationManager);
+        this.authenticationService = authenticationService;
     }
 
     /**

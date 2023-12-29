@@ -44,7 +44,7 @@ public class StandardAuthenticationService implements AuthenticationService {
 
     @Override
     @Transactional(rollbackFor = { Exception.class })
-    public String login(String login, String password) throws FunctionalException {
+    public User login(String login, String password) throws FunctionalException {
         // Get the user associated to the given nickname
         var user = this.userRepository
             .findByUsername(login)
@@ -62,7 +62,7 @@ public class StandardAuthenticationService implements AuthenticationService {
         // Log the connection
         logger.info(user.getUsername() + " logged in.");
 
-        return user.getToken();
+        return user;
     }
 
     @Override

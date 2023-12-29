@@ -95,7 +95,7 @@ public class SecurityConfiguration {
         });
 
         // Add the TokenAuthenticationFilter to the security filter list
-        http.addFilter(new TokenAuthenticationFilter(this.authenticationManager()));
+        http.addFilter(new TokenAuthenticationFilter(this.authenticationManager(), this.authenticationService));
 
         return http.build();
     }

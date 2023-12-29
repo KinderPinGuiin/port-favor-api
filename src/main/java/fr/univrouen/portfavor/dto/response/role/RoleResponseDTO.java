@@ -9,7 +9,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class RoleDTO {
+public class RoleResponseDTO {
 
     /**
      * The role's name.
