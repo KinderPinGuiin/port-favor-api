@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -49,14 +50,24 @@ public class StandardImageService implements ImageService {
     private String imagesFolder;
 
     @Override
-    public List<Image> getAll() {
-        // If the user is not authenticated, return only the public images.
-        var user = this.authenticationService.getCurrentUser();
-        if (!this.canAccessPrivate(user)) {
-            return this.imageRepository.findAllPublic();
+    public Long getImagesAmount() {
+        return this.imageRepository.count();
+    }
+
+    @Override
+    public List<Image> getAll(Integer page, Integer pageSize) throws FunctionalException {
+        // If page is null returns all the users
+        if (page == null) {
+            return this.imageRepository.findAll();
         }
 
-        return this.imageRepository.findAll();
+        // Check params
+        if (page < 0 || (pageSize != null && pageSize <= 0)) {
+            throw new FunctionalException(ErrorMessage.INVALID_PAGINATION, HttpStatus.BAD_REQUEST);
+        }
+
+        // Apply pagination
+        return this.imageRepository.findAll(PageRequest.of(page, pageSize == null ? 10 : pageSize)).toList();
     }
 
     public Image getById(Long id) throws FunctionalException {

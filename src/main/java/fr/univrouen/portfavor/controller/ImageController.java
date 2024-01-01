@@ -5,7 +5,7 @@ import fr.univrouen.portfavor.dto.request.image.CreateImageRequestDTO;
 import fr.univrouen.portfavor.dto.request.image.DeleteImageRequestDTO;
 import fr.univrouen.portfavor.dto.request.image.UpdateImageRequestDTO;
 import fr.univrouen.portfavor.dto.response.image.ImageResponseDTO;
-import fr.univrouen.portfavor.dto.response.user.UserResponseDTO;
+import fr.univrouen.portfavor.dto.response.image.ImageSearchResponseDTO;
 import fr.univrouen.portfavor.exception.FunctionalException;
 import fr.univrouen.portfavor.service.ImageService;
 import org.modelmapper.ModelMapper;
@@ -44,17 +44,39 @@ public class ImageController {
     @Autowired
     private ModelMapper modelMapper;
 
+//    /**
+//     * @return All the stored images that the current user can access (without image content).
+//     */
+//    @GetMapping(GET_IMAGES_SKELETON)
+//    @ResponseBody
+//    public List<ImageResponseDTO> getAllImages() {
+//        return this.imageService
+//            .getAll()
+//            .stream()
+//            .map(image -> this.modelMapper.map(image, ImageResponseDTO.class))
+//            .toList();
+//    }
+
     /**
      * @return All the stored images that the current user can access (without image content).
      */
     @GetMapping(GET_IMAGES_SKELETON)
     @ResponseBody
-    public List<ImageResponseDTO> getAllImages() {
-        return this.imageService
-            .getAll()
+    public ImageSearchResponseDTO getAllImages(
+        @RequestParam(value = "page", required = false) Integer page,
+        @RequestParam(value = "pageSize", required = false) Integer pageSize
+    ) throws FunctionalException {
+        var images = this.imageService
+            .getAll(page, pageSize)
             .stream()
             .map(image -> this.modelMapper.map(image, ImageResponseDTO.class))
             .toList();
+        return new ImageSearchResponseDTO(
+            page == null ? 0 : page,
+            pageSize == null ? page == null ? 0 : 10 : pageSize,
+            this.imageService.getImagesAmount(),
+            images
+        );
     }
 
     /**

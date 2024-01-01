@@ -1,6 +1,7 @@
 package fr.univrouen.portfavor.service;
 
 import fr.univrouen.portfavor.entity.Image;
+import fr.univrouen.portfavor.entity.User;
 import fr.univrouen.portfavor.exception.FunctionalException;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,11 +14,19 @@ import java.util.List;
 public interface ImageService {
 
     /**
-     * Get all the images and return them.
-     *
-     * @return All the stored images that the current user can access (without image content).
+     * @return The amount of images.
      */
-    List<Image> getAll();
+    Long getImagesAmount();
+
+    /**
+     * Retrieves all the images and paginate them. If page is null then all the images are returned.
+     *
+     * @param  page                The page of the images to retrieve (start at 0).
+     * @param  pageSize            The size of the page (amount of images returned, default : 10).
+     * @return                     The users of the given page or all the images if page is null.
+     * @throws FunctionalException Exception thrown if page < 0 or pageSize <= 0
+     */
+    List<Image> getAll(Integer page, Integer pageSize) throws FunctionalException;
 
     /**
      * Retrieves the given image and returns it.
