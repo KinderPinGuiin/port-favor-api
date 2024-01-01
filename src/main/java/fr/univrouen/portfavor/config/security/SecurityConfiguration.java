@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -90,6 +91,9 @@ public class SecurityConfiguration {
                     new AntPathRequestMatcher(ImageController.GET_IMAGE_SKELETON),
                     new AntPathRequestMatcher(ImageController.GET_IMAGES_SKELETON)
                 ).permitAll()
+                // Permit all OPTIONS requests
+                .requestMatchers(new AntPathRequestMatcher("/**", HttpMethod.OPTIONS.name())).permitAll()
+                // Permit requests on the error fallback page
                 .requestMatchers(new AntPathRequestMatcher("/error")).permitAll();
 
             // Authorize any requests on the H2 database if the environment is dev
