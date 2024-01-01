@@ -12,6 +12,11 @@ import java.util.Set;
 public interface UserService {
 
     /**
+     * @return The amount of users.
+     */
+    Long getUsersAmount();
+
+    /**
      * Retrieves all the users and paginate them. If page is null then all the users are returned.
      *
      * @param  page                The page of the users to retrieve (start at 0).

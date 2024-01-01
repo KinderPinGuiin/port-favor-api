@@ -37,6 +37,11 @@ public class StandardUserService implements UserService {
     private static Logger logger = LoggerFactory.getLogger(StandardAuthenticationService.class);
 
     @Override
+    public Long getUsersAmount() {
+        return this.userRepository.count();
+    }
+
+    @Override
     public List<User> getAll(Integer page, Integer pageSize) throws FunctionalException {
         // If page is null returns all the users
         if (page == null) {

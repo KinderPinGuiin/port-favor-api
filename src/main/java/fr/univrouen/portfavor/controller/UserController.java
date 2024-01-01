@@ -5,6 +5,7 @@ import fr.univrouen.portfavor.dto.request.user.*;
 import fr.univrouen.portfavor.dto.response.authentication.AuthenticationResponseDTO;
 import fr.univrouen.portfavor.dto.response.role.RoleResponseDTO;
 import fr.univrouen.portfavor.dto.response.user.UserResponseDTO;
+import fr.univrouen.portfavor.dto.response.user.UserSearchResponseDTO;
 import fr.univrouen.portfavor.entity.Role;
 import fr.univrouen.portfavor.exception.FunctionalException;
 import fr.univrouen.portfavor.service.AuthenticationService;
@@ -52,15 +53,21 @@ public class UserController {
     @GetMapping(GET_USERS)
     @PreAuthorize("hasAuthority('" + RoleID.ADMIN + "')")
     @ResponseBody
-    public List<UserResponseDTO> getAllUsers(
+    public UserSearchResponseDTO getAllUsers(
         @RequestParam(value = "page", required = false) Integer page,
         @RequestParam(value = "pageSize", required = false) Integer pageSize
     ) throws FunctionalException {
-        return this.userService
+        var users = this.userService
             .getAll(page, pageSize)
             .stream()
             .map(user -> this.modelMapper.map(user, UserResponseDTO.class))
             .toList();
+        return new UserSearchResponseDTO(
+            page == null ? 0 : page,
+            pageSize == null ? page == null ? 0 : 10 : pageSize,
+            this.userService.getUsersAmount(),
+            users
+        );
     }
 
     /**
