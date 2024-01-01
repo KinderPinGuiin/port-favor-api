@@ -46,7 +46,7 @@ public class AuthenticationController {
     @ResponseBody
     public AuthenticationResponseDTO login(@RequestBody AuthenticationRequestDTO request) throws FunctionalException {
         return this.modelMapper.map(
-            this.authenticationService.login(request.getLogin(), request.getPassword()),
+            this.authenticationService.login(request.getEmail(), request.getPassword()),
             AuthenticationResponseDTO.class
         );
     }
@@ -61,7 +61,7 @@ public class AuthenticationController {
     @ResponseBody
     public RegisterResponseDTO register(@RequestBody RegisterRequestDTO request) throws FunctionalException {
         return modelMapper.map(
-            this.userService.create(request.getLogin(), request.getPassword(), Set.of()),
+            this.userService.create(request.getEmail(), request.getPassword(), Set.of()),
             RegisterResponseDTO.class
         );
     }
