@@ -37,6 +37,11 @@ public class StandardUserService implements UserService {
     private static Logger logger = LoggerFactory.getLogger(StandardAuthenticationService.class);
 
     @Override
+    public Long getUsersAmount() {
+        return this.userRepository.count();
+    }
+
+    @Override
     public List<User> getAll(Integer page, Integer pageSize) throws FunctionalException {
         // If page is null returns all the users
         if (page == null) {
@@ -65,19 +70,19 @@ public class StandardUserService implements UserService {
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public User create(String login, String password, Set<String> roles) throws FunctionalException {
+    public User create(String email, String password, Set<String> roles) throws FunctionalException {
         // Check if the given parameters are valid
-        this.checkUserInformation(login, password, roles);
+        this.checkUserInformation(email, password, roles);
 
-        // Get the user associated to the given login and check that it doesn't already exist
-        if (this.userRepository.findByUsername(login).orElse(null) != null) {
-            throw new FunctionalException(ErrorMessage.USERNAME_ALREADY_USED, HttpStatus.BAD_REQUEST);
+        // Get the user associated to the given email and check that it doesn't already exist
+        if (this.userRepository.findByEmail(email).orElse(null) != null) {
+            throw new FunctionalException(ErrorMessage.EMAIL_ALREADY_USED, HttpStatus.BAD_REQUEST);
         }
 
         // Creates the user in the database
         var user = this.userRepository.save(new User(
             0L,
-            login,
+            email,
             this.passwordEncoder.encode(password),
             UUID.randomUUID().toString(),
             roles.isEmpty()
@@ -86,27 +91,27 @@ public class StandardUserService implements UserService {
         ));
 
         // Log the connection
-        logger.info("User " + user.getUsername() + " created with ID " + user.getId() + ".");
+        logger.info("User " + user.getEmail() + " created with ID " + user.getId() + ".");
 
         return user;
     }
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public User update(Long id, String login, String password, Set<String> roles) throws FunctionalException {
+    public User update(Long id, String email, String password, Set<String> roles) throws FunctionalException {
         // Get the user associated to the given ID
         var user = this.getById(id);
 
         // Check if the given parameters are valid
-        this.checkUserInformation(login, password == null ? "00000000" : password, roles);
+        this.checkUserInformation(email, password == null ? "00000000" : password, roles);
 
-        // Get the user associated to the given login and check that it doesn't already exist
-        if (!user.getUsername().equals(login) && this.userRepository.findByUsername(login).orElse(null) != null) {
-            throw new FunctionalException(ErrorMessage.USERNAME_ALREADY_USED, HttpStatus.BAD_REQUEST);
+        // Get the user associated to the given email and check that it doesn't already exist
+        if (!user.getEmail().equals(email) && this.userRepository.findByEmail(email).orElse(null) != null) {
+            throw new FunctionalException(ErrorMessage.EMAIL_ALREADY_USED, HttpStatus.BAD_REQUEST);
         }
 
         // Update the user's information
-        user.setUsername(login);
+        user.setEmail(email);
         if (password != null && !this.passwordEncoder.matches(password, user.getPassword())) {
             // If the password is not the same then we refresh the token
             user.setPassword(this.passwordEncoder.encode(password));
@@ -155,13 +160,13 @@ public class StandardUserService implements UserService {
     /**
      * Checks the given user information and throw an exception if they are invalid.
      *
-     * @param login    The user's login.
+     * @param email    The user's email.
      * @param password The user's password.
      * @param roles    The user's roles ID.
      */
-    private void checkUserInformation(String login, String password, Set<String> roles) throws FunctionalException {
+    private void checkUserInformation(String email, String password, Set<String> roles) throws FunctionalException {
         // Check if the given parameters are valid
-        if (!login.matches("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")) {
+        if (!email.matches("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")) {
             throw new FunctionalException(ErrorMessage.INVALID_EMAIL, HttpStatus.BAD_REQUEST);
         }
         if (password.length() < 8) {

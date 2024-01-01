@@ -15,9 +15,9 @@ import java.util.Set;
 public class RegisterResponseDTO {
 
     /**
-     * The created user's login.
+     * The created user's email.
      */
-    private @NonNull String username;
+    private @NonNull String email;
 
     /**
      * The created user's token.

@@ -5,6 +5,7 @@ import fr.univrouen.portfavor.dto.request.user.*;
 import fr.univrouen.portfavor.dto.response.authentication.AuthenticationResponseDTO;
 import fr.univrouen.portfavor.dto.response.role.RoleResponseDTO;
 import fr.univrouen.portfavor.dto.response.user.UserResponseDTO;
+import fr.univrouen.portfavor.dto.response.user.UserSearchResponseDTO;
 import fr.univrouen.portfavor.entity.Role;
 import fr.univrouen.portfavor.exception.FunctionalException;
 import fr.univrouen.portfavor.service.AuthenticationService;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -52,15 +52,21 @@ public class UserController {
     @GetMapping(GET_USERS)
     @PreAuthorize("hasAuthority('" + RoleID.ADMIN + "')")
     @ResponseBody
-    public List<UserResponseDTO> getAllUsers(
+    public UserSearchResponseDTO getAllUsers(
         @RequestParam(value = "page", required = false) Integer page,
         @RequestParam(value = "pageSize", required = false) Integer pageSize
     ) throws FunctionalException {
-        return this.userService
+        var users = this.userService
             .getAll(page, pageSize)
             .stream()
             .map(user -> this.modelMapper.map(user, UserResponseDTO.class))
             .toList();
+        return new UserSearchResponseDTO(
+            page == null ? 0 : page,
+            pageSize == null ? page == null ? 0 : 10 : pageSize,
+            this.userService.getUsersAmount(),
+            users
+        );
     }
 
     /**
@@ -88,7 +94,7 @@ public class UserController {
     public UserResponseDTO createUser(@RequestBody CreateUserRequestDTO createUserRequest) throws FunctionalException {
         return this.modelMapper.map(
             this.userService.create(
-                createUserRequest.getLogin(),
+                createUserRequest.getEmail(),
                 createUserRequest.getPassword(),
                 createUserRequest.getRoles()
             ),
@@ -109,7 +115,7 @@ public class UserController {
         return this.modelMapper.map(
             this.userService.update(
                 updateRequest.getId(),
-                updateRequest.getLogin(),
+                updateRequest.getEmail(),
                 updateRequest.getPassword(),
                 updateRequest.getRoles()
             ),
@@ -131,7 +137,7 @@ public class UserController {
         return this.modelMapper.map(
             this.userService.update(
                 user.getId(),
-                updateRequest.getNewUsername(),
+                updateRequest.getNewEmail(),
                 null,
                 user.getRoles().stream().map(Role::getName).collect(Collectors.toSet())
             ),
@@ -154,7 +160,7 @@ public class UserController {
         var user = this.authenticationService.getCurrentUser();
         return new AuthenticationResponseDTO(
             user.getId(),
-            user.getUsername(),
+            user.getEmail(),
             user.getRoles().stream().map(role -> this.modelMapper.map(role, RoleResponseDTO.class)).collect(Collectors.toSet()),
             this.userService.updatePassword(
                 user,

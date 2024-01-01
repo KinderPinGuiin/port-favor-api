@@ -12,8 +12,8 @@ import lombok.*;
 public class UpdateUserRequestDTO {
 
     /**
-     * The user's new username.
+     * The user's new email.
      */
-    private @NonNull String newUsername;
+    private @NonNull String newEmail;
 
 }

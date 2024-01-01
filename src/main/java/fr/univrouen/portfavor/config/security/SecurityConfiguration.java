@@ -1,6 +1,7 @@
 package fr.univrouen.portfavor.config.security;
 
 import fr.univrouen.portfavor.controller.AuthenticationController;
+import fr.univrouen.portfavor.controller.ImageController;
 import fr.univrouen.portfavor.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -82,6 +83,12 @@ public class SecurityConfiguration {
                     new AntPathRequestMatcher("/swagger-ui/**"),
                     new AntPathRequestMatcher("/swagger-ui.html"),
                     new AntPathRequestMatcher("/v3/api-docs/**")
+                ).permitAll()
+                // Authorize any requests on the images endpoint
+                .requestMatchers(
+                    new AntPathRequestMatcher(ImageController.GET_IMAGE_CONTENT),
+                    new AntPathRequestMatcher(ImageController.GET_IMAGE_SKELETON),
+                    new AntPathRequestMatcher(ImageController.GET_IMAGES_SKELETON)
                 ).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/error")).permitAll();
 

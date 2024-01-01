@@ -12,6 +12,11 @@ import java.util.Set;
 public interface UserService {
 
     /**
+     * @return The amount of users.
+     */
+    Long getUsersAmount();
+
+    /**
      * Retrieves all the users and paginate them. If page is null then all the users are returned.
      *
      * @param  page                The page of the users to retrieve (start at 0).
@@ -33,26 +38,26 @@ public interface UserService {
     /**
      * Creates the user associated to the given information and returns it.
      *
-     * @param  login                The user's nickname.
+     * @param  email                The user's email.
      * @param  password             The user's password.
      * @param  roles                The user's roles.
      * @return                      The user's registered.
-     * @throws FunctionalException  Exception thrown if the given login already exists or if the given information are
+     * @throws FunctionalException  Exception thrown if the given email already exists or if the given information are
      *                              invalid (bad email, invalid password...).
      */
-    User create(String login, String password, Set<String> roles) throws FunctionalException;
+    User create(String email, String password, Set<String> roles) throws FunctionalException;
 
     /**
      * Updates the given user and returns it.
      *
      * @param id                   The ID of the user to update.
-     * @param login                The new user's login.
+     * @param email                The new user's email.
      * @param password             The new user's password (null if no changes).
      * @param roles                The new user's roles.
      * @return                     The new user's roles.
      * @throws FunctionalException Exception thrown if the given ID is invalid or if the user's information are invalid.
      */
-    User update(Long id, String login, String password, Set<String> roles) throws FunctionalException;
+    User update(Long id, String email, String password, Set<String> roles) throws FunctionalException;
 
     /**
      * Updates the given user's password and returns the new token.

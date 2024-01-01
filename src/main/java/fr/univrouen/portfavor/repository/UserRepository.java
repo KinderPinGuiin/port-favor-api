@@ -13,10 +13,10 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
-     * @param  username The user's username.
-     * @return          The user associated to the given username.
+     * @param  email The user's email.
+     * @return       The user associated to the given email.
      */
-    Optional<User> findByUsername(String username);
+    Optional<User> findByEmail(String email);
 
     /**
      * @param  token The user's token.

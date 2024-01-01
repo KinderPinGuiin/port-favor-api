@@ -1,12 +1,16 @@
 package fr.univrouen.portfavor.config.database;
 
 import fr.univrouen.portfavor.constant.role.RoleID;
+import fr.univrouen.portfavor.entity.Image;
 import fr.univrouen.portfavor.entity.User;
+import fr.univrouen.portfavor.repository.ImageRepository;
 import fr.univrouen.portfavor.repository.RoleRepository;
 import fr.univrouen.portfavor.repository.UserRepository;
+import fr.univrouen.portfavor.service.ResourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +18,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -32,7 +39,13 @@ public class DevelopmentDatabaseInitializer implements ApplicationRunner {
     private RoleRepository roleRepository;
 
     @Autowired
+    private ImageRepository imageRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ResourceService resourceService;
 
     private static final Logger logger = LoggerFactory.getLogger(DevelopmentDatabaseInitializer.class);
 
@@ -47,18 +60,6 @@ public class DevelopmentDatabaseInitializer implements ApplicationRunner {
      * Initialize the dev users.
      */
     private void initUsers() {
-        // Admin user
-        this.userRepository.save(new User(
-            0L,
-            "admin@gmail.com",
-            this.passwordEncoder.encode("admin"),
-            "36b780db-cdfc-40b6-b8b2-2f5699b5be44",
-            new HashSet<>(List.of(
-                this.roleRepository.findById(RoleID.USER).get(),
-                this.roleRepository.findById(RoleID.ADMIN).get()
-            ))
-        ));
-
         // Classic user
         this.userRepository.save(new User(
             0L,
@@ -66,6 +67,18 @@ public class DevelopmentDatabaseInitializer implements ApplicationRunner {
             this.passwordEncoder.encode("user"),
             "36b780db-cdfc-40b6-b8b2-2f5699b5be45",
             new HashSet<>(List.of(this.roleRepository.findById(RoleID.USER).get()))
+        ));
+
+        // Private user
+        this.userRepository.save(new User(
+            0L,
+            "private-user@gmail.com",
+            this.passwordEncoder.encode("user"),
+            "36b780db-cdfc-40b6-b8b2-2f5699b5be46",
+            new HashSet<>(List.of(
+                this.roleRepository.findById(RoleID.USER).get(),
+                this.roleRepository.findById(RoleID.PRIVATE_USER).get()
+            ))
         ));
     }
 

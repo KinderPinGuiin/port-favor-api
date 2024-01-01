@@ -19,9 +19,9 @@ public class UpdateUserAdminRequestDTO {
     private @NonNull Long id;
 
     /**
-     * The user's new login.
+     * The user's new email.
      */
-    private @NonNull String login;
+    private @NonNull String email;
 
     /**
      * The user's new password (null if no changes).

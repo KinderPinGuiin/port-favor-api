@@ -34,7 +34,8 @@ public class StandardAuthenticationService implements AuthenticationService {
 
     @Override
     public User getCurrentUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var currentUser = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return currentUser instanceof User ? (User) currentUser : null;
     }
 
     @Override
@@ -44,10 +45,10 @@ public class StandardAuthenticationService implements AuthenticationService {
 
     @Override
     @Transactional(rollbackFor = { Exception.class })
-    public User login(String login, String password) throws FunctionalException {
+    public User login(String email, String password) throws FunctionalException {
         // Get the user associated to the given nickname
         var user = this.userRepository
-            .findByUsername(login)
+            .findByEmail(email)
             .orElseThrow(() -> new FunctionalException(ErrorMessage.INVALID_CREDENTIALS, HttpStatus.FORBIDDEN));
 
         // Check the user password
@@ -60,7 +61,7 @@ public class StandardAuthenticationService implements AuthenticationService {
         this.userRepository.save(user);
 
         // Log the connection
-        logger.info(user.getUsername() + " logged in.");
+        logger.info(user.getEmail() + " logged in.");
 
         return user;
     }
@@ -69,7 +70,7 @@ public class StandardAuthenticationService implements AuthenticationService {
     @Transactional(rollbackFor = { Exception.class })
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.userRepository
-            .findByUsername(username == null ? "" : username)
+            .findByEmail(username == null ? "" : username)
             .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " not found"));
     }
 

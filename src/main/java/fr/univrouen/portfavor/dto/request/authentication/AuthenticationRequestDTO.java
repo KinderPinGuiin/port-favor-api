@@ -12,9 +12,9 @@ import lombok.*;
 public class AuthenticationRequestDTO {
 
     /**
-     * The user's login.
+     * The user's email.
      */
-    private @NonNull String login;
+    private @NonNull String email;
 
     /**
      * The user's password.
