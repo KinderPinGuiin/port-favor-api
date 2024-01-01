@@ -34,7 +34,8 @@ public class StandardAuthenticationService implements AuthenticationService {
 
     @Override
     public User getCurrentUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var currentUser = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return currentUser instanceof User ? (User) currentUser : null;
     }
 
     @Override

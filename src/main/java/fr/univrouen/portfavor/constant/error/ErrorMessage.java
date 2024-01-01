@@ -23,7 +23,13 @@ public enum ErrorMessage {
     INVALID_EMAIL("Adresse mail invalide."),
     INVALID_ROLE_ID("Le rôle donné est invalide."),
     PASSWORD_IS_TOO_SHORT("Mot de passe trop court (8 caractères minimum)."),
-    INVALID_OLD_PASSWORD("Ancien mot de passe invalide.");
+    INVALID_OLD_PASSWORD("Ancien mot de passe invalide."),
+
+    // Images errors
+    CANT_UPLOAD_IMAGES("Impossible d'uploader l'image."),
+    CANT_DETERMINE_CONTENT_TYPE("Le type de fichier ne peut pas être déterminé ou est invalide."),
+    INVALID_CONTENT_TYPE("Type de fichier invalide (seules les images sont autorisées)."),
+    IMAGE_NOT_FOUND("Le nom de l'image est invalide.");
 
     /**
      * The error message.

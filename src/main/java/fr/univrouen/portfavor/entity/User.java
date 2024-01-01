@@ -11,6 +11,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Entity representing an application user.
+ */
 @Entity
 @Getter
 @Setter
