@@ -5,10 +5,19 @@ import fr.univrouen.portfavor.exception.FunctionalException;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * Service used to handle the API images.
  */
 public interface ImageService {
+
+    /**
+     * Get all the images and return them.
+     *
+     * @return All the stored images that the current user can access (without image content).
+     */
+    List<Image> getAll();
 
     /**
      * Get the image data associated to the given name and returns it.

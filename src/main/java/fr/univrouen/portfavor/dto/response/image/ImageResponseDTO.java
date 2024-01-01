@@ -9,7 +9,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class ImageDTO {
+public class ImageResponseDTO {
 
     /**
      * The image's ID.

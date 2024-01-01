@@ -58,6 +58,7 @@ public class DatabaseInitializer implements ApplicationRunner {
             "36b780db-cdfc-40b6-b8b2-2f5699b5be44",
             new HashSet<>(List.of(
                 this.roleRepository.findById(RoleID.USER).get(),
+                this.roleRepository.findById(RoleID.PRIVATE_USER).get(),
                 this.roleRepository.findById(RoleID.ADMIN).get()
             ))
         ));

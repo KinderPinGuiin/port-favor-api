@@ -1,7 +1,9 @@
 package fr.univrouen.portfavor.service.standard;
 
 import fr.univrouen.portfavor.constant.error.ErrorMessage;
+import fr.univrouen.portfavor.constant.role.RoleID;
 import fr.univrouen.portfavor.entity.Image;
+import fr.univrouen.portfavor.entity.User;
 import fr.univrouen.portfavor.exception.FunctionalException;
 import fr.univrouen.portfavor.repository.ImageRepository;
 import fr.univrouen.portfavor.service.AuthenticationService;
@@ -25,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -46,6 +49,17 @@ public class StandardImageService implements ImageService {
     private String imagesFolder;
 
     @Override
+    public List<Image> getAll() {
+        // If the user is not authenticated, return only the public images.
+        var user = this.authenticationService.getCurrentUser();
+        if (!this.canAccessPrivate(user)) {
+            return this.imageRepository.findAllPublic();
+        }
+
+        return this.imageRepository.findAll();
+    }
+
+    @Override
     public Resource getImageAsResource(String imageName) throws FunctionalException {
         // Check if the image exists
         var image = this.imageRepository.findByPath(imageName).orElse(null);
@@ -55,7 +69,7 @@ public class StandardImageService implements ImageService {
 
         // Check that the image is not private
         var currentUser = this.authenticationService.getCurrentUser();
-        if (!image.isPublic() && currentUser == null) {
+        if (!image.isPublic() && !this.canAccessPrivate(currentUser)) {
             throw new FunctionalException(ErrorMessage.IMAGE_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
 
@@ -134,6 +148,14 @@ public class StandardImageService implements ImageService {
                 return outputStream.toByteArray();
             }
         }
+    }
+
+    /**
+     * @param  u The user to check.
+     * @return   True if the user can access private portfolio, false otherwise.
+     */
+    private boolean canAccessPrivate(User u) {
+        return !(u == null || u.getRoles().stream().noneMatch(role -> role.getName().equals(RoleID.PRIVATE_USER)));
     }
 
 }

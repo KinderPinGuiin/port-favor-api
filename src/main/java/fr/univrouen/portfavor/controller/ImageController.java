@@ -2,7 +2,8 @@ package fr.univrouen.portfavor.controller;
 
 import fr.univrouen.portfavor.constant.role.RoleID;
 import fr.univrouen.portfavor.dto.request.image.CreateImageRequestDTO;
-import fr.univrouen.portfavor.dto.response.image.ImageDTO;
+import fr.univrouen.portfavor.dto.response.image.ImageResponseDTO;
+import fr.univrouen.portfavor.dto.response.user.UserResponseDTO;
 import fr.univrouen.portfavor.exception.FunctionalException;
 import fr.univrouen.portfavor.service.ImageService;
 import org.modelmapper.ModelMapper;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 
 @RestController
 public class ImageController {
@@ -39,6 +41,19 @@ public class ImageController {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    /**
+     * @return All the stored images that the current user can access (without image content).
+     */
+    @GetMapping(GET_IMAGES_SKELETON)
+    @ResponseBody
+    public List<ImageResponseDTO> getAllImages() {
+        return this.imageService
+            .getAll()
+            .stream()
+            .map(image -> this.modelMapper.map(image, ImageResponseDTO.class))
+            .toList();
+    }
 
     /**
      * Retrieves the given image and return it as base64.
@@ -70,11 +85,14 @@ public class ImageController {
 
     /**
      * Creates the given image and store it.
+     *
+     * @param  request The image to create.
+     * @return         The created image.
      */
     @PostMapping(path = CREATE_IMAGE, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     @PreAuthorize("hasAuthority('" + RoleID.ADMIN + "')")
     @ResponseBody
-    public ImageDTO createImage(@ModelAttribute CreateImageRequestDTO request) throws FunctionalException {
+    public ImageResponseDTO createImage(@ModelAttribute CreateImageRequestDTO request) throws FunctionalException {
         return this.modelMapper.map(
             this.imageService.create(
                 request.getName(),
@@ -82,7 +100,7 @@ public class ImageController {
                 request.getIsPublic(),
                 request.getImageData().getResource()
             ),
-            ImageDTO.class
+            ImageResponseDTO.class
         );
     }
 

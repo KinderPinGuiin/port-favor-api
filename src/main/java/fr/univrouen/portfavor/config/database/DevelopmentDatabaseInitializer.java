@@ -68,6 +68,18 @@ public class DevelopmentDatabaseInitializer implements ApplicationRunner {
             "36b780db-cdfc-40b6-b8b2-2f5699b5be45",
             new HashSet<>(List.of(this.roleRepository.findById(RoleID.USER).get()))
         ));
+
+        // Private user
+        this.userRepository.save(new User(
+            0L,
+            "private-user@gmail.com",
+            this.passwordEncoder.encode("user"),
+            "36b780db-cdfc-40b6-b8b2-2f5699b5be46",
+            new HashSet<>(List.of(
+                this.roleRepository.findById(RoleID.USER).get(),
+                this.roleRepository.findById(RoleID.PRIVATE_USER).get()
+            ))
+        ));
     }
 
 }
