@@ -74,7 +74,6 @@ public class ImageController {
     @PostMapping(path = CREATE_IMAGE, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     @PreAuthorize("hasAuthority('" + RoleID.ADMIN + "')")
     @ResponseBody
-    // TODO : DTO
     public ImageDTO createImage(@ModelAttribute CreateImageRequestDTO request) throws FunctionalException {
         return this.modelMapper.map(
             this.imageService.create(

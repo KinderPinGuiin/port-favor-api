@@ -3,6 +3,7 @@ package fr.univrouen.portfavor.service.standard;
 import fr.univrouen.portfavor.service.ResourceService;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -26,9 +27,16 @@ public class StandardResourceService implements ResourceService {
     @Autowired
     private ResourceLoader resourceLoader;
 
+    @Value("${portfavor.resources.folder}")
+    private String resourcesFolderRoot;
+
     @Override
     public Path getResourcesPath() throws IOException {
-        return new DefaultResourceLoader().getResource("classpath:/").getFile().toPath();
+        // Create the directories if they don't exist and returns the path
+        var path = Path.of(this.resourcesFolderRoot);
+        Files.createDirectories(path);
+
+        return path;
     }
 
     @Override

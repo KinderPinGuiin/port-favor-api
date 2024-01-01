@@ -21,6 +21,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -70,14 +71,20 @@ public class StandardImageService implements ImageService {
     public Image create(String name, String description, boolean isPublic, Resource data) throws FunctionalException {
         // Check that the given file is an image
         String mime;
+        File tempFile = null;
         try {
-            mime = MediaType.valueOf(Files.probeContentType(this.resourceService.toFile(data).toPath())).toString();
+            tempFile = this.resourceService.toFile(data);
+            mime = MediaType.valueOf(Files.probeContentType(tempFile.toPath())).toString();
             if (!mime.startsWith("image/")) {
                 throw new FunctionalException(ErrorMessage.INVALID_CONTENT_TYPE, HttpStatus.BAD_REQUEST);
             }
         } catch (IOException e) {
             e.printStackTrace();
             throw new FunctionalException(ErrorMessage.CANT_UPLOAD_IMAGES, HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+            if (tempFile != null) {
+                tempFile.delete();
+            }
         }
 
         // Crop the image

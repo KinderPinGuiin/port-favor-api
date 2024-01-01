@@ -38,6 +38,9 @@ services:
     depends_on:
       database:
         condition: service_healthy
+    volumes:
+      - images-store:/home/build/resources:rw
 
 volumes:
   db-store:
+  images-store:
