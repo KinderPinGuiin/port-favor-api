@@ -31,10 +31,10 @@ public final class User implements Serializable, UserDetails {
     private Long id;
 
     /**
-     * The user's username.
+     * The user's email.
      */
     @NonNull
-    private String username;
+    private String email;
 
     /**
      * The user's password.
@@ -53,9 +53,9 @@ public final class User implements Serializable, UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
-    public User(@NonNull Long id, @NonNull String username, @NonNull String password, String token) {
+    public User(@NonNull Long id, @NonNull String email, @NonNull String password, String token) {
         this.id = id;
-        this.username = username;
+        this.email = email;
         this.password = password;
         this.token = token;
     }
@@ -76,9 +76,8 @@ public final class User implements Serializable, UserDetails {
         return this.password;
     }
 
-    @Override
     public String getUsername() {
-        return this.username;
+        return this.email;
     }
 
     @Override
