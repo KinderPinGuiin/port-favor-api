@@ -36,6 +36,14 @@ public interface ResourceService {
      */
     void save(Resource file, String folder, String filename) throws IOException;
 
+    /**
+     * Deletes the file associated to the given name.
+     *
+     * @param  filename    The name of the file to delete.
+     * @throws IOException Exception thrown if the file can't be deleted.
+     */
+    void delete(String filename) throws IOException;
+
     File toFile(Resource resource) throws IOException;
 
 }

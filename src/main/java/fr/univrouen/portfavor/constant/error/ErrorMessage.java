@@ -29,7 +29,9 @@ public enum ErrorMessage {
     CANT_UPLOAD_IMAGES("Impossible d'uploader l'image."),
     CANT_DETERMINE_CONTENT_TYPE("Le type de fichier ne peut pas être déterminé ou est invalide."),
     INVALID_CONTENT_TYPE("Type de fichier invalide (seules les images sont autorisées)."),
-    IMAGE_NOT_FOUND("Le nom de l'image est invalide.");
+    IMAGE_NOT_FOUND("Le nom de l'image est invalide."),
+    IMAGE_ID_NOT_FOUND("L'ID de l'image est invalide."),
+    CANT_DELETE_IMAGE("Impossible de supprimer l'image.");
 
     /**
      * The error message.

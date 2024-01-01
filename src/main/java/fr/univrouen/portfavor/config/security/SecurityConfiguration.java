@@ -86,7 +86,7 @@ public class SecurityConfiguration {
                 ).permitAll()
                 // Authorize any requests on the images endpoint
                 .requestMatchers(
-                    new AntPathRequestMatcher(ImageController.GET_IMAGE),
+                    new AntPathRequestMatcher(ImageController.GET_IMAGE_CONTENT),
                     new AntPathRequestMatcher(ImageController.GET_IMAGE_SKELETON),
                     new AntPathRequestMatcher(ImageController.GET_IMAGES_SKELETON)
                 ).permitAll()

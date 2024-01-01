@@ -74,6 +74,16 @@ public class StandardResourceService implements ResourceService {
     }
 
     @Override
+    public void delete(String filename) throws IOException {
+        var file = this.getResource(filename);
+
+        var success = file.getFile().delete();
+        if (!success) {
+            throw new IOException("Can't delete the file " + filename);
+        }
+    }
+
+    @Override
     public File toFile(Resource resource) throws IOException {
         var tempFile = new File(Objects.requireNonNull(resource.getFilename()));
         try (InputStream inputStream = resource.getInputStream(); OutputStream outputStream = new FileOutputStream(tempFile)) {

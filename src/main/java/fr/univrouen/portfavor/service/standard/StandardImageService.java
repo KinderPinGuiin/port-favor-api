@@ -17,9 +17,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -59,6 +59,22 @@ public class StandardImageService implements ImageService {
         return this.imageRepository.findAll();
     }
 
+    public Image getById(Long id) throws FunctionalException {
+        // Get the image
+        var image = this.imageRepository.findById(id).orElse(null);
+        if (image == null) {
+            throw new FunctionalException(ErrorMessage.IMAGE_ID_NOT_FOUND, HttpStatus.NOT_FOUND);
+        }
+
+        // Check that the image is not accessible
+        var currentUser = this.authenticationService.getCurrentUser();
+        if (!image.isPublic() && !this.canAccessPrivate(currentUser)) {
+            throw new FunctionalException(ErrorMessage.IMAGE_NOT_FOUND, HttpStatus.NOT_FOUND);
+        }
+
+        return image;
+    }
+
     @Override
     public Image getByName(String name) throws FunctionalException {
         var image = this.imageRepository.findByPath(name).orElse(null);
@@ -89,6 +105,7 @@ public class StandardImageService implements ImageService {
     }
 
     @Override
+    @Transactional(rollbackFor = {Exception.class})
     public Image create(String name, String description, boolean isPublic, Resource data) throws FunctionalException {
         // Check that the given file is an image
         String mime;
@@ -132,6 +149,40 @@ public class StandardImageService implements ImageService {
         return this.imageRepository.save(image);
     }
 
+    @Override
+    @Transactional(rollbackFor = {Exception.class})
+    public Image update(Long id, String newName, String newDescription, boolean newIsPublic) throws FunctionalException {
+        // Get the image
+        var image = this.getById(id);
+
+        // Update it and returns it
+        image.setName(newName);
+        image.setDescription(newDescription);
+        image.setPublic(newIsPublic);
+
+        return this.imageRepository.save(image);
+    }
+
+    @Override
+    @Transactional(rollbackFor = {Exception.class})
+    public Image delete(Long id) throws FunctionalException {
+        // Get the image
+        var image = this.getById(id);
+
+        // Delete it from the storage
+        try {
+            this.resourceService.delete(Paths.get(imagesFolder, image.getPath()).toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new FunctionalException(ErrorMessage.CANT_DELETE_IMAGE, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Delete the entity
+        this.imageRepository.delete(image);
+
+        return image;
+    }
+
     /**
      * Crop the given image to make it a square on it's center.
      *
@@ -162,7 +213,12 @@ public class StandardImageService implements ImageService {
      * @return   True if the user can access private portfolio, false otherwise.
      */
     private boolean canAccessPrivate(User u) {
-        return !(u == null || u.getRoles().stream().noneMatch(role -> role.getName().equals(RoleID.PRIVATE_USER)));
+        return !(
+            u == null
+            || u.getRoles()
+                .stream()
+                .noneMatch(role -> role.getName().equals(RoleID.PRIVATE_USER) || role.getName().equals(RoleID.ADMIN))
+        );
     }
 
 }

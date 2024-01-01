@@ -2,6 +2,8 @@ package fr.univrouen.portfavor.controller;
 
 import fr.univrouen.portfavor.constant.role.RoleID;
 import fr.univrouen.portfavor.dto.request.image.CreateImageRequestDTO;
+import fr.univrouen.portfavor.dto.request.image.DeleteImageRequestDTO;
+import fr.univrouen.portfavor.dto.request.image.UpdateImageRequestDTO;
 import fr.univrouen.portfavor.dto.response.image.ImageResponseDTO;
 import fr.univrouen.portfavor.dto.response.user.UserResponseDTO;
 import fr.univrouen.portfavor.exception.FunctionalException;
@@ -31,7 +33,7 @@ public class ImageController {
     public static final String IMAGE_ROOT = "/image";
     public static final String GET_IMAGES_SKELETON = IMAGE_ROOT + "/get-skeleton";
     public static final String GET_IMAGE_SKELETON = IMAGE_ROOT + "/get-skeleton/{name}";
-    public static final String GET_IMAGE = IMAGE_ROOT + "/get/{name}";
+    public static final String GET_IMAGE_CONTENT = IMAGE_ROOT + "/get/{name}";
     public static final String CREATE_IMAGE = IMAGE_ROOT + "/create";
     public static final String UPDATE_IMAGE = IMAGE_ROOT + "/update";
     public static final String DELETE_IMAGE = IMAGE_ROOT + "/delete";
@@ -56,7 +58,7 @@ public class ImageController {
     }
 
     /**
-     * @return All the stored images that the current user can access (without image content).
+     * @return The image associated to the given name (without image content).
      */
     @GetMapping(GET_IMAGE_SKELETON)
     @ResponseBody
@@ -64,14 +66,13 @@ public class ImageController {
         return this.modelMapper.map(this.imageService.getByName(imageName), ImageResponseDTO.class);
     }
 
-
     /**
      * Retrieves the given image and return it as base64.
      *
      * @param imageName The name of the image to retrieve.
      * @return          The base64 image.
      */
-    @GetMapping(GET_IMAGE)
+    @GetMapping(GET_IMAGE_CONTENT)
     @ResponseBody
     public HttpEntity<?> getImageBase64(@PathVariable("name") String imageName) throws FunctionalException {
         // Load the image and convert it to stream
@@ -112,6 +113,40 @@ public class ImageController {
             ),
             ImageResponseDTO.class
         );
+    }
+
+    /**
+     * Request sent to update the user own information.
+     *
+     * @param  updateRequest The new user's information.
+     * @return               The updated user.
+     */
+    @PostMapping(path = UPDATE_IMAGE)
+    @PreAuthorize("hasAuthority('" + RoleID.ADMIN + "')")
+    @ResponseBody
+    public ImageResponseDTO updateImage(@RequestBody UpdateImageRequestDTO updateRequest) throws FunctionalException {
+        return this.modelMapper.map(
+            this.imageService.update(
+                updateRequest.getId(),
+                updateRequest.getName(),
+                updateRequest.getDescription(),
+                updateRequest.getIsPublic()
+            ),
+            ImageResponseDTO.class
+        );
+    }
+
+    /**
+     * Deletes the given image.
+     *
+     * @param  deleteRequest The images to delete information.
+     * @return               The deleted image.
+     */
+    @DeleteMapping(DELETE_IMAGE)
+    @PreAuthorize("hasAuthority('" + RoleID.ADMIN + "')")
+    @ResponseBody
+    public ImageResponseDTO deleteImage(@RequestBody DeleteImageRequestDTO deleteRequest) throws FunctionalException {
+        return this.modelMapper.map(this.imageService.delete(deleteRequest.getId()), ImageResponseDTO.class);
     }
 
 }

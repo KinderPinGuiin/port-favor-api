@@ -50,4 +50,25 @@ public interface ImageService {
      */
     Image create(String name, String description, boolean isPublic, Resource data) throws FunctionalException;
 
+    /**
+     * Updates the image associated to the given ID with the given information.
+     *
+     * @param id                   The image's to update ID.
+     * @param newName              The image's new name.
+     * @param newDescription       The image's description.
+     * @param newIsPublic          The new image's privacy.
+     * @return                     The updated image.
+     * @throws FunctionalException Exception thrown if the given ID is invalid.
+     */
+    Image update(Long id, String newName, String newDescription, boolean newIsPublic) throws FunctionalException;
+
+    /**
+     * Deletes the image associated to the given ID.
+     *
+     * @param  id                  The ID of the image to delete.
+     * @return                     The deleted image.
+     * @throws FunctionalException Exception thrown when the given ID is invalid.
+     */
+    Image delete(Long id) throws FunctionalException;
+
 }

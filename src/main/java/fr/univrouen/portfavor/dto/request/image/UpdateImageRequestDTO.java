@@ -1,16 +1,20 @@
 package fr.univrouen.portfavor.dto.request.image;
 
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Request sent to create an image
+ * Request sent to update an image.
  */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class CreateImageRequestDTO {
+public class UpdateImageRequestDTO {
+
+    /**
+     * The image's ID.
+     */
+    private @NonNull Long id;
 
     /**
      * The image's name.
@@ -27,9 +31,5 @@ public class CreateImageRequestDTO {
      */
     private @NonNull Boolean isPublic;
 
-    /**
-     * The image's content.
-     */
-    private @NonNull MultipartFile imageData;
 
 }
