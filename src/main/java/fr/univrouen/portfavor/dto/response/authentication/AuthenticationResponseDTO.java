@@ -20,9 +20,9 @@ public class AuthenticationResponseDTO {
     private Long id;
 
     /**
-     * The user's username.
+     * The user's email.
      */
-    private String username;
+    private String email;
 
     /**
      * The user's roles.

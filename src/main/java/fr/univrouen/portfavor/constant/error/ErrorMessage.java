@@ -16,7 +16,7 @@ public enum ErrorMessage {
 
     // Authentication errors
     INVALID_CREDENTIALS("Adresse email ou mot de passe invalide."),
-    USERNAME_ALREADY_USED("Adresse email déjà utilisée."),
+    EMAIL_ALREADY_USED("Adresse email déjà utilisée."),
 
     // User errors
     INVALID_USER_ID("Identifiant utilisateur invalide."),

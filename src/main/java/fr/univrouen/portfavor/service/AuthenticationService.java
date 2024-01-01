@@ -23,13 +23,13 @@ public interface AuthenticationService extends UserDetailsService {
     User getUserByToken(String token);
 
     /**
-     * Login the user associated to the given login information and returns it.
+     * Login the user associated to the given email information and returns it.
      *
-     * @param  login                The user's nickname.
+     * @param  email                The user's email.
      * @param  password             The user's password.
      * @return                      The logged in user.
      * @throws FunctionalException  Exception thrown if the given credentials are invalid.
      */
-    User login(String login, String password) throws FunctionalException;
+    User login(String email, String password) throws FunctionalException;
 
 }

@@ -45,10 +45,10 @@ public class StandardAuthenticationService implements AuthenticationService {
 
     @Override
     @Transactional(rollbackFor = { Exception.class })
-    public User login(String login, String password) throws FunctionalException {
+    public User login(String email, String password) throws FunctionalException {
         // Get the user associated to the given nickname
         var user = this.userRepository
-            .findByEmail(login)
+            .findByEmail(email)
             .orElseThrow(() -> new FunctionalException(ErrorMessage.INVALID_CREDENTIALS, HttpStatus.FORBIDDEN));
 
         // Check the user password

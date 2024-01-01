@@ -74,9 +74,9 @@ public class StandardUserService implements UserService {
         // Check if the given parameters are valid
         this.checkUserInformation(email, password, roles);
 
-        // Get the user associated to the given login and check that it doesn't already exist
+        // Get the user associated to the given email and check that it doesn't already exist
         if (this.userRepository.findByEmail(email).orElse(null) != null) {
-            throw new FunctionalException(ErrorMessage.USERNAME_ALREADY_USED, HttpStatus.BAD_REQUEST);
+            throw new FunctionalException(ErrorMessage.EMAIL_ALREADY_USED, HttpStatus.BAD_REQUEST);
         }
 
         // Creates the user in the database
@@ -105,9 +105,9 @@ public class StandardUserService implements UserService {
         // Check if the given parameters are valid
         this.checkUserInformation(email, password == null ? "00000000" : password, roles);
 
-        // Get the user associated to the given login and check that it doesn't already exist
+        // Get the user associated to the given email and check that it doesn't already exist
         if (!user.getEmail().equals(email) && this.userRepository.findByEmail(email).orElse(null) != null) {
-            throw new FunctionalException(ErrorMessage.USERNAME_ALREADY_USED, HttpStatus.BAD_REQUEST);
+            throw new FunctionalException(ErrorMessage.EMAIL_ALREADY_USED, HttpStatus.BAD_REQUEST);
         }
 
         // Update the user's information
@@ -160,13 +160,13 @@ public class StandardUserService implements UserService {
     /**
      * Checks the given user information and throw an exception if they are invalid.
      *
-     * @param login    The user's login.
+     * @param email    The user's email.
      * @param password The user's password.
      * @param roles    The user's roles ID.
      */
-    private void checkUserInformation(String login, String password, Set<String> roles) throws FunctionalException {
+    private void checkUserInformation(String email, String password, Set<String> roles) throws FunctionalException {
         // Check if the given parameters are valid
-        if (!login.matches("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")) {
+        if (!email.matches("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")) {
             throw new FunctionalException(ErrorMessage.INVALID_EMAIL, HttpStatus.BAD_REQUEST);
         }
         if (password.length() < 8) {
