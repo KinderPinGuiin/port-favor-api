@@ -56,14 +56,23 @@ public class StandardImageService implements ImageService {
 
     @Override
     public List<Image> getAll(Integer page, Integer pageSize) throws FunctionalException {
-        // If page is null returns all the users
-        if (page == null) {
-            return this.imageRepository.findAll();
+        // Check params
+        if ((page != null && page < 0) || (pageSize != null && pageSize <= 0)) {
+            throw new FunctionalException(ErrorMessage.INVALID_PAGINATION, HttpStatus.BAD_REQUEST);
         }
 
-        // Check params
-        if (page < 0 || (pageSize != null && pageSize <= 0)) {
-            throw new FunctionalException(ErrorMessage.INVALID_PAGINATION, HttpStatus.BAD_REQUEST);
+        var user = this.authenticationService.getCurrentUser();
+        if (!this.canAccessPrivate(user)) {
+            // If page is null returns all the public images
+            if (page == null) {
+                return this.imageRepository.findAllPublic();
+            } else {
+                return this.imageRepository.findAllPublic(PageRequest.of(page, pageSize == null ? 10 : pageSize));
+            }
+        }
+
+        if (page == null) {
+            return this.imageRepository.findAll();
         }
 
         // Apply pagination
@@ -79,7 +88,7 @@ public class StandardImageService implements ImageService {
 
         // Check that the image is not accessible
         var currentUser = this.authenticationService.getCurrentUser();
-        if (!image.isPublic() && !this.canAccessPrivate(currentUser)) {
+        if (!image.isPub() && !this.canAccessPrivate(currentUser)) {
             throw new FunctionalException(ErrorMessage.IMAGE_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
 
@@ -95,7 +104,7 @@ public class StandardImageService implements ImageService {
 
         // Check that the image is not accessible
         var currentUser = this.authenticationService.getCurrentUser();
-        if (!image.isPublic() && !this.canAccessPrivate(currentUser)) {
+        if (!image.isPub() && !this.canAccessPrivate(currentUser)) {
             throw new FunctionalException(ErrorMessage.IMAGE_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
 
@@ -169,7 +178,7 @@ public class StandardImageService implements ImageService {
         // Update it and returns it
         image.setName(newName);
         image.setDescription(newDescription);
-        image.setPublic(newIsPublic);
+        image.setPub(newIsPublic);
 
         return this.imageRepository.save(image);
     }

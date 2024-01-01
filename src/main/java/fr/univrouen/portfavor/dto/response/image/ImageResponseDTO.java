@@ -29,7 +29,7 @@ public class ImageResponseDTO {
     /**
      * Indicates if the image is public or not.
      */
-    private boolean isPublic;
+    private boolean pub;
 
     /**
      * The MIME type of the image.

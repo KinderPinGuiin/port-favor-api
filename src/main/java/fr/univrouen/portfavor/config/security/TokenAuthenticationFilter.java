@@ -5,7 +5,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,9 +45,10 @@ public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
         // Get the Authorization header
         var header = request.getHeader("Authorization");
 
-        // If no Authorization header is found, or if the token doesn't start by Bearer, then we let the rest of the
-        // chain handle the request
-        if (header == null || !header.startsWith("Bearer")) {
+        // If no Authorization header is found, or if the token doesn't start by Bearer, or if the bearer isn't given
+        // in the URL then we let the rest of the chain handle the request
+        String paramToken = request.getParameter("token");
+        if ((header == null || !header.startsWith("Bearer")) && paramToken == null) {
             chain.doFilter(request, response);
             if (response.getStatus() == HttpStatus.FORBIDDEN.value()) {
                 logger.info("Someone tried to reach " + request.getRequestURI() + " without providing bearer token.");
@@ -58,7 +58,7 @@ public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
         }
 
         // Get the token value and get the user associated to it
-        var authToken = header.replace("Bearer", "").trim();
+        var authToken = paramToken != null ? paramToken : header.replace("Bearer", "").trim();
         var user = this.authenticationService.getUserByToken(authToken);
         if (user == null) {
             // If the user is null (invalid token) then we don't do anything
