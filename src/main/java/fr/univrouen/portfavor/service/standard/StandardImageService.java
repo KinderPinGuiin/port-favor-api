@@ -60,18 +60,25 @@ public class StandardImageService implements ImageService {
     }
 
     @Override
-    public Resource getImageAsResource(String imageName) throws FunctionalException {
-        // Check if the image exists
-        var image = this.imageRepository.findByPath(imageName).orElse(null);
+    public Image getByName(String name) throws FunctionalException {
+        var image = this.imageRepository.findByPath(name).orElse(null);
         if (image == null) {
             throw new FunctionalException(ErrorMessage.IMAGE_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
 
-        // Check that the image is not private
+        // Check that the image is not accessible
         var currentUser = this.authenticationService.getCurrentUser();
         if (!image.isPublic() && !this.canAccessPrivate(currentUser)) {
             throw new FunctionalException(ErrorMessage.IMAGE_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
+
+        return image;
+    }
+
+    @Override
+    public Resource getImageAsResource(String imageName) throws FunctionalException {
+        // Check if the image exists
+        var image = this.getByName(imageName);
 
         // Return the image as a resource
         try {

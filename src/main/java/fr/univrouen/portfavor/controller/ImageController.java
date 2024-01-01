@@ -56,6 +56,16 @@ public class ImageController {
     }
 
     /**
+     * @return All the stored images that the current user can access (without image content).
+     */
+    @GetMapping(GET_IMAGE_SKELETON)
+    @ResponseBody
+    public ImageResponseDTO getImage(@PathVariable("name") String imageName) throws FunctionalException {
+        return this.modelMapper.map(this.imageService.getByName(imageName), ImageResponseDTO.class);
+    }
+
+
+    /**
      * Retrieves the given image and return it as base64.
      *
      * @param imageName The name of the image to retrieve.
@@ -63,7 +73,7 @@ public class ImageController {
      */
     @GetMapping(GET_IMAGE)
     @ResponseBody
-    public HttpEntity<?> getImage(@PathVariable("name") String imageName) throws FunctionalException {
+    public HttpEntity<?> getImageBase64(@PathVariable("name") String imageName) throws FunctionalException {
         // Load the image and convert it to stream
         var image = this.imageService.getImageAsResource(imageName);
         try {

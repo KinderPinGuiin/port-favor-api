@@ -20,6 +20,15 @@ public interface ImageService {
     List<Image> getAll();
 
     /**
+     * Retrieves the given image and returns it.
+     *
+     * @param  name                The name of the image to retrieve.
+     * @return                     The image associated to the given name.
+     * @throws FunctionalException Exception thrown if the given name is invalid (not found or invalid permissions).
+     */
+    Image getByName(String name) throws FunctionalException;
+
+    /**
      * Get the image data associated to the given name and returns it.
      *
      * @param  imageName           The name of the image to retrieve.
